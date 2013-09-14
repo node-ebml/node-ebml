@@ -1,8 +1,8 @@
 # EBML [![Build Status](https://travis-ci.org/themasch/node-ebml.png?branch=master)](https://travis-ci.org/themasch/node-ebml)
 
-[http://ebml.sourceforge.net/](EBML) stands for Extensible Binary Meta-Language
+[EBML](http://ebml.sourceforge.net/) stands for Extensible Binary Meta-Language
 and is some what of a binary version of XML.
-It's used for container formats like webm or [http://www.matroska.org/technical/specs/index.html](mkv)
+It's used for container formats like webm or [mkv](http://www.matroska.org/technical/specs/index.html)
 
 # install
 
