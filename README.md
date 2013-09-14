@@ -1,4 +1,4 @@
-# ebml
+# EBML [![Build Status](https://travis-ci.org/themasch/node-ebml.png?branch=master)](https://travis-ci.org/themasch/node-ebml)
 
 [http://ebml.sourceforge.net/](EBML) stands for Extensible Binary Meta-Language
 and is some what of a binary version of XML.
