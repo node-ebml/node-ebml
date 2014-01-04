@@ -6,20 +6,23 @@ It's used for container formats like webm or [mkv](http://www.matroska.org/techn
 
 # install
 
-Currently this library isn't available in npm because of its early stage. I don't
-want to block the name for projects that may come up with a better solution.
-
-So to install this library, just clone it in your node_modules folder:
-
 ```
-git clone https://github.com/themasch/node-ebml.git node_modules/ebml
+npm install ebml
 ```
+
+# example
+
+TBD. (meanwhile see example.js)
 
 # state of this project
 
-This project is in a very early stage. Parsing works (kind of) but its no where
-near production ready.
+Parsing should work. If it doesn't, please create [an issue](https://github.com/themasch/node-ebml/issues/new).
 
 # license
 
 MIT
+
+# contributors
+
+* [Manuel Wiedenmann](https://github.com/fsmanuel)
+* [Mark Schmale](https://github.com/themasch)
