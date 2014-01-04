@@ -66,7 +66,7 @@ describe('embl', function() {
 
         it('should emit correct tag events for simple data', function(done) {
             var decoder = new ebml.Decoder();
-            decoder.on('tag', function(data) {
+            decoder.on('EBMLVersion', function(data) {
                 assert.equal(data.tag, 0x4286)
                 assert.equal(data.dataSize, 0x01)
                 assert.equal(data.type, 'u')
@@ -76,10 +76,10 @@ describe('embl', function() {
             decoder.write(new Buffer([0x42, 0x86, 0x81, 0x01]))
         })
 
-        it('should emit correct tag events for master tags', function(done) {
-            var decoder = new ebml.Decoder({ tagmap: { 0x1A45dfa3: 'm'} });
+        it('should emit correct EBML tag events for master tags', function(done) {
+            var decoder = new ebml.Decoder();
 
-            decoder.on('tag', function(data) {
+            decoder.on('EBML', function(data) {
                 assert.equal(data.tag, 0x1A45dfa3)
                 assert.equal(data.dataSize, 0)
                 assert.equal(data.type, 'm')
@@ -90,13 +90,16 @@ describe('embl', function() {
             decoder.write(new Buffer([0x1a, 0x45, 0xdf, 0xa3, 0x80]))
         })
 
-        it('should emit correct tag:end events for master tags', function(done) {
-            var decoder = new ebml.Decoder({ tagmap: { 0x1A45dfa3: 'm'} });
+        it('should emit correct EBML:end events for master tags', function(done) {
+            var decoder = new ebml.Decoder();
             var tags  = 0;
-            decoder.on('tag', function(data) {
+            decoder.on('EBML', function(data) {
                 tags++;
             })
-            decoder.on('tag:end', function(data) {
+            decoder.on('EBMLVersion', function(data) {
+                tags++;
+            })
+            decoder.on('EBML:end', function(data) {
                 assert.equal(tags, 2)      // two tags
                 assert.equal(data.tag, 0x1A45dfa3)
                 assert.equal(data.dataSize, 0x81 - 0x80)

@@ -1,7 +1,7 @@
 var ebml = require('./index.js')
 var fs = require('fs')
 
-var decoder = new ebml.Decoder({});
+var decoder = new ebml.Decoder();
 
 decoder.on('Cluster', function(data) {
     console.log(data.name, data)
