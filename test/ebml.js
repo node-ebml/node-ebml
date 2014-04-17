@@ -41,66 +41,44 @@ describe('embl', function() {
             })
             // not testing more bytes, takes sooo long
         })
-        describe('#getTagLength()', function() {
-            it('should return 1 for tags that are supposed to be 1 byte long', function() {
-                for(var i=0x80;i<0xFF;i++) {
-                    assert.equal(1, ebml.tools.getTagLength(i), 'wrong result for 0x' + i.toString(16))
-                }
-            })
-            it('should return 2 for tags that are supposed to be 2 byte long', function() {
-                for(var i=0x40;i<0x80;i++) {
-                    assert.equal(2, ebml.tools.getTagLength(i), 'wrong result for 0x' + i.toString(16))
-                }
-            })
-            it('should return 3 for tags that are supposed to be 3 byte long', function() {
-                for(var i=0x20;i<0x40;i++) {
-                    assert.equal(3, ebml.tools.getTagLength(i), 'wrong result for 0x' + i.toString(16))
-                }
-            })
-            it('should return 4 for tags that are supposed to be 4 byte long', function() {
-                for(var i=0x10;i<0x20;i++) {
-                    assert.equal(4, ebml.tools.getTagLength(i), 'wrong result for 0x' + i.toString(16))
-                }
-            })
-        })
 
-        describe('#getDataSizeLength()', function() {
+        describe('#getVintLength()', function() {
             it('should return 1 for tags that are supposed to be 1 byte long', function() {
                 for(var i=0x80;i<0xFF;i++) {
-                    assert.equal(1, ebml.tools.getDataSizeLength(i), 'wrong result for 0x' + i.toString(16))
+                    assert.equal(1, ebml.tools.getVintLength(i), 'wrong result for 0x' + i.toString(16))
                 }
             })
             it('should return 2 for tags that are supposed to be 2 byte long', function() {
                 for(var i=0x40;i<0x80;i++) {
-                    assert.equal(2, ebml.tools.getDataSizeLength(i), 'wrong result for 0x' + i.toString(16))
+                    assert.equal(2, ebml.tools.getVintLength(i), 'wrong result for 0x' + i.toString(16))
                 }
             })
             it('should return 3 for tags that are supposed to be 3 byte long', function() {
                 for(var i=0x20;i<0x40;i++) {
-                    assert.equal(3, ebml.tools.getDataSizeLength(i), 'wrong result for 0x' + i.toString(16))
+                    assert.equal(3, ebml.tools.getVintLength(i), 'wrong result for 0x' + i.toString(16))
                 }
             })
             it('should return 4 for tags that are supposed to be 4 byte long', function() {
                 for(var i=0x10;i<0x20;i++) {
-                    assert.equal(4, ebml.tools.getDataSizeLength(i), 'wrong result for 0x' + i.toString(16))
+                    assert.equal(4, ebml.tools.getVintLength(i), 'wrong result for 0x' + i.toString(16))
                 }
             })
             it('should return 5 for tags that are supposed to be 5 byte long', function() {
                 for(var i=0x08;i<0x0F;i++) {
-                    assert.equal(5, ebml.tools.getDataSizeLength(i), 'wrong result for 0x' + i.toString(16))
+                    assert.equal(5, ebml.tools.getVintLength(i), 'wrong result for 0x' + i.toString(16))
                 }
             })
             it('should return 6 for tags that are supposed to be 6 byte long', function() {
                 for(var i=0x04;i<0x08;i++) {
-                    assert.equal(6, ebml.tools.getDataSizeLength(i), 'wrong result for 0x' + i.toString(16))
+                    assert.equal(6, ebml.tools.getVintLength(i), 'wrong result for 0x' + i.toString(16))
                 }
             })
             it('should return 7 for tags that are supposed to be 7 byte long', function() {
-                assert.equal(7, ebml.tools.getDataSizeLength(0x02), 'wrong result for 0x02')
-                assert.equal(7, ebml.tools.getDataSizeLength(0x03), 'wrong result for 0x03')
+                assert.equal(7, ebml.tools.getVintLength(0x02), 'wrong result for 0x02')
+                assert.equal(7, ebml.tools.getVintLength(0x03), 'wrong result for 0x03')
             })
             it('should return 8 for tags that are supposed to be 8 byte long', function() {
-                assert.equal(8, ebml.tools.getDataSizeLength(0x01), 'wrong result for 0x01')
+                assert.equal(8, ebml.tools.getVintLength(0x01), 'wrong result for 0x01')
             })
         })
     })
