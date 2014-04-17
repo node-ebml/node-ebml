@@ -3,43 +3,61 @@ var ebml = require('../lib/ebml/index.js')
 
 describe('embl', function() {
     describe('tools', function() {
-        describe('#calcDataSize()', function() {
-            it('should return the correct size for 1 byte ints', function() {
+        describe('#getVintValue()', function() {
+            it('should return the correct value for all 1 byte ints', function() {
                 for(var i=0;i<0x80;i++) {
                     var b = new Buffer([i | 0x80])
                     var res = null;
                     assert.equal(
                         i,
-                        res = ebml.tools.calcDataSize(b),
+                        res = ebml.tools.getVintValue(b, 1, 0),
                         'wrong result for 0x' + b.toString('hex') + ' (is: '+res+' | should '+i+')'
                     )
                 }
             })
-            it('should return the correct size for 2 byte ints', function() {
+            it('should return the correct value for all 2 byte ints', function() {
                 for(var i=0;i<0x40;i++) for(j=0;j<0xff;j++) {
                     var b = new Buffer([i | 0x40, j])
                     var x = (i << 8) + j
                     var res = null;
                     assert.equal(
                         x,
-                        res = ebml.tools.calcDataSize(b),
+                        res = ebml.tools.getVintValue(b, 2, 0),
                         'wrong result for 0x' + b.toString('hex') + ' (is: '+res+' | should '+x+')'
                     )
                 }
             })
-            it('should return the correct size for 3 byte ints', function() {
+            it('should return the correct value for all 3 byte ints', function() {
                 for(var i=0;i<0x20;i++) for(j=0;j<0xff;j+=2)  for(k=0;k<0xff;k+=3) {
                     var b = new Buffer([i | 0x20, j, k])
                     var x = (i << 16) + (j << 8) + k
                     var res = null;
                     assert.equal(
                         x,
-                        res = ebml.tools.calcDataSize(b),
+                        res = ebml.tools.getVintValue(b, 3, 0),
                         'wrong result for 0x' + b.toString('hex') + ' (is: '+res+' | should '+x+')'
                     )
                 }
             })
-            // not testing more bytes, takes sooo long
+            // not brute forcing any more bytes, takes sooo long
+            it('should return the correct value for 4 byte int min value', function() {
+                var b = new Buffer([0x10, 0x20, 0x00, 0x00]);
+                var x = 2097152; // (2^21)
+                assert.equal(
+                    x,
+                    res = ebml.tools.getVintValue(b, 4, 0),
+                    'wrong result for 0x' + b.toString('hex') + ' (is: '+res+' | should '+x+')'
+                )
+            })
+            it('should return the correct value for 4 byte int max value ', function() {
+                var b = new Buffer([0x1F, 0xFF, 0xFF, 0xFF]);
+                var x = 268435455; // (2^28 - 1)
+                assert.equal(
+                    x,
+                    res = ebml.tools.getVintValue(b, 4, 0),
+                    'wrong result for 0x' + b.toString('hex') + ' (is: '+res+' | should '+x+')'
+                )
+            })
         })
 
         describe('#getVintLength()', function() {

@@ -67,7 +67,8 @@ describe('embl', function() {
         it('should emit correct tag events for simple data', function(done) {
             var decoder = new ebml.Decoder();
             decoder.on('EBMLVersion', function(data) {
-                assert.equal(data.tag, 0x4286)
+                assert.equal(data.tag, 0x286)
+                assert.equal(data.tagStr, "4286")
                 assert.equal(data.dataSize, 0x01)
                 assert.equal(data.type, 'u')
                 assert.deepEqual(data.data, new Buffer([0x01]))
@@ -80,7 +81,8 @@ describe('embl', function() {
             var decoder = new ebml.Decoder();
 
             decoder.on('EBML', function(data) {
-                assert.equal(data.tag, 0x1A45dfa3)
+                assert.equal(data.tag, 0x0a45dfa3)
+                assert.equal(data.tagStr, "1a45dfa3")
                 assert.equal(data.dataSize, 0)
                 assert.equal(data.type, 'm')
                 assert.equal(data.data, undefined)
@@ -101,7 +103,8 @@ describe('embl', function() {
             })
             decoder.on('EBML:end', function(data) {
                 assert.equal(tags, 2)      // two tags
-                assert.equal(data.tag, 0x1A45dfa3)
+                assert.equal(data.tag, 0x0a45dfa3)
+                assert.equal(data.tagStr, "1a45dfa3")
                 assert.equal(data.dataSize, 0x81 - 0x80)
                 assert.equal(data.type, 'm')
                 assert.equal(data.data, undefined)
