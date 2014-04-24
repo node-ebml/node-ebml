@@ -49,7 +49,7 @@ describe('embl', function() {
                     'wrong result for 0x' + b.toString('hex') + ' (is: '+res+' | should '+x+')'
                 )
             })
-            it('should return the correct value for 4 byte int max value ', function() {
+            it('should return the correct value for 4 byte int max value', function() {
                 var b = new Buffer([0x1F, 0xFF, 0xFF, 0xFF]);
                 var x = 268435455; // (2^28 - 1)
                 assert.equal(
@@ -57,6 +57,13 @@ describe('embl', function() {
                     res = ebml.tools.getVintValue(b, 4, 0),
                     'wrong result for 0x' + b.toString('hex') + ' (is: '+res+' | should '+x+')'
                 )
+            })
+            it('should throw for 5+ byte int values', function() {
+                var b = new Buffer([0x0F, 0xFF, 0xFF, 0xFF, 0xFF]);
+                var x = 268435455; // (2^28)
+                assert.throws(function() {
+                    ebml.tools.getVintValue(b, 5, 0);
+                })
             })
         })
 
@@ -98,6 +105,74 @@ describe('embl', function() {
             it('should return the correct length for all 8 byte ints', function() {
                 assert.equal(8, ebml.tools.getVintLength(0x01), 'wrong result for 0x01')
             })
+        })
+
+        describe('#writeVint()', function() {
+            it('should throw when writing -1', function() {
+                var buffer = new Buffer(8)
+                assert.throws(
+                    function() { ebml.tools.writeVint(-1, buffer) },
+                    /Unrepresentable value, negative: -1/)
+            })
+            it('should write 1 byte int min value', function() {
+                var buffer = new Buffer(8)
+                assert.equal(1, ebml.tools.writeVint(0, buffer))
+                assert.equal(0x80, buffer[0])
+            })
+            it('should write 1 byte int max value', function() {
+                var buffer = new Buffer(8)
+                assert.equal(1, ebml.tools.writeVint(127, buffer)) // (2^7 - 1)
+                assert.equal(0xFF, buffer[0])
+            })
+            it('should write 2 byte int min value', function() {
+                var buffer = new Buffer(8)
+                assert.equal(2, ebml.tools.writeVint(128, buffer)) // (2^7)
+                assert.equal(0x40, buffer[0])
+                assert.equal(0x80, buffer[1])
+            })
+            it('should write 2 byte int max value', function() {
+                var buffer = new Buffer(8)
+                assert.equal(2, ebml.tools.writeVint(16383, buffer)) // (2^14 - 1)
+                assert.equal(0x7F, buffer[0])
+                assert.equal(0xFF, buffer[1])
+            })
+            it('should write 3 byte int min value', function() {
+                var buffer = new Buffer(8)
+                assert.equal(3, ebml.tools.writeVint(16384, buffer)) // (2^14)
+                assert.equal(0x20, buffer[0])
+                assert.equal(0x40, buffer[1])
+                assert.equal(0x00, buffer[2])
+            })
+            it('should write 3 byte int max value', function() {
+                var buffer = new Buffer(8)
+                assert.equal(3, ebml.tools.writeVint(2097151, buffer)) // (2^21 - 1)
+                assert.equal(0x3F, buffer[0])
+                assert.equal(0xFF, buffer[1])
+                assert.equal(0xFF, buffer[2])
+            })
+            it('should write 4 byte int min value', function() {
+                var buffer = new Buffer(8)
+                assert.equal(4, ebml.tools.writeVint(2097152, buffer)) // (2^21)
+                assert.equal(0x10, buffer[0])
+                assert.equal(0x20, buffer[1])
+                assert.equal(0x00, buffer[2])
+                assert.equal(0x00, buffer[3])
+            })
+            it('should write 4 byte int max value', function() {
+                var buffer = new Buffer(8)
+                assert.equal(4, ebml.tools.writeVint(268435455, buffer)) // (2^28 - 1)
+                assert.equal(0x1F, buffer[0])
+                assert.equal(0xFF, buffer[1])
+                assert.equal(0xFF, buffer[2])
+                assert.equal(0xFF, buffer[3])
+            })
+            it('should throw when writing 5+ byte int values', function() {
+                var buffer = new Buffer(8)
+                assert.throws(
+                    function() { ebml.tools.writeVint(268435456, buffer) }, // (2^28)
+                    /Unrepresentable value, too large: 268435456/)
+            })
+
         })
     })
 })
