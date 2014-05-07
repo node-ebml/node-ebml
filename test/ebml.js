@@ -58,11 +58,94 @@ describe('embl', function() {
                     'wrong result for 0x' + b.toString('hex') + ' (is: '+res+' | should '+x+')'
                 )
             })
-            it('should throw for 5+ byte int values', function() {
+            it('should return the correct value for 5 byte int min value', function() {
+                var b = new Buffer([0x08, 0x10, 0x00, 0x00, 0x00]);
+                var x = 268435456; // (2^28)
+                assert.equal(
+                    x,
+                    res = ebml.tools.getVintValue(b, 5, 0),
+                    'wrong result for 0x' + b.toString('hex') + ' (is: '+res+' | should '+x+')'
+                )
+            })
+            it('should return the correct value for 5 byte int max value', function() {
                 var b = new Buffer([0x0F, 0xFF, 0xFF, 0xFF, 0xFF]);
-                var x = 268435455; // (2^28)
+                var x = 34359738367; // (2^35 - 1)
+                assert.equal(
+                    x,
+                    res = ebml.tools.getVintValue(b, 5, 0),
+                    'wrong result for 0x' + b.toString('hex') + ' (is: '+res+' | should '+x+')'
+                )
+            })
+            it('should return the correct value for 6 byte int min value', function() {
+                var b = new Buffer([0x04, 0x08, 0x00, 0x00, 0x00, 0x00]);
+                var x = 34359738368; // (2^35)
+                assert.equal(
+                    x,
+                    res = ebml.tools.getVintValue(b, 6, 0),
+                    'wrong result for 0x' + b.toString('hex') + ' (is: '+res+' | should '+x+')'
+                )
+            })
+            it('should return the correct value for 6 byte int max value', function() {
+                var b = new Buffer([0x07, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF]);
+                var x = 4398046511103; // (2^42 - 1)
+                assert.equal(
+                    x,
+                    res = ebml.tools.getVintValue(b, 6, 0),
+                    'wrong result for 0x' + b.toString('hex') + ' (is: '+res+' | should '+x+')'
+                )
+            })
+            it('should return the correct value for 7 byte int min value', function() {
+                var b = new Buffer([0x02, 0x04, 0x00, 0x00, 0x00, 0x00, 0x00]);
+                var x = 4398046511104; // (2^42)
+                assert.equal(
+                    x,
+                    res = ebml.tools.getVintValue(b, 7, 0),
+                    'wrong result for 0x' + b.toString('hex') + ' (is: '+res+' | should '+x+')'
+                )
+            })
+            it('should return the correct value for 7 byte int max value', function() {
+                var b = new Buffer([0x03, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF]);
+                var x = 562949953421311; // (2^49 - 1)
+                assert.equal(
+                    x,
+                    res = ebml.tools.getVintValue(b, 7, 0),
+                    'wrong result for 0x' + b.toString('hex') + ' (is: '+res+' | should '+x+')'
+                )
+            })
+            it('should return the correct value for 8 byte int min value', function() {
+                var b = new Buffer([0x01, 0x02, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00]);
+                var x = 562949953421312; // (2^49)
+                assert.equal(
+                    x,
+                    res = ebml.tools.getVintValue(b, 8, 0),
+                    'wrong result for 0x' + b.toString('hex') + ' (is: '+res+' | should '+x+')'
+                )
+            })
+            it('should return the correct value for the max representable JS number (2^52)', function() {
+                var b = new Buffer([0x01, 0x20, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00]);
+                var x = 9007199254740992; // (2^52)
+                assert.equal(
+                    x,
+                    res = ebml.tools.getVintValue(b, 8, 0),
+                    'wrong result for 0x' + b.toString('hex') + ' (is: '+res+' | should '+x+')'
+                )
+            })
+            it('should throw for more than max representable JS number (2^52 + 1)', function() {
+                var b = new Buffer([0x01, 0x20, 0x00, 0x00, 0x00, 0x00, 0x00, 0x01]);
                 assert.throws(function() {
-                    ebml.tools.getVintValue(b, 5, 0);
+                    ebml.tools.getVintValue(b, 8, 0);
+                })
+            })
+            it('should throw for more than max representable JS number (8 byte int max value)', function() {
+                var b = new Buffer([0x01, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF]);
+                assert.throws(function() {
+                    ebml.tools.getVintValue(b, 8, 0);
+                })
+            })
+            it('should throw for 9+ byte int values', function() {
+                var b = new Buffer([0x00, 0x80, 0x00, 0x00, 0x00, 0x00, 0x00, 0xFF, 0xFF]);
+                assert.throws(function() {
+                    ebml.tools.getVintValue(b, 9, 0);
                 })
             })
         })
