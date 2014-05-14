@@ -3,193 +3,73 @@ var ebml = require('../lib/ebml/index.js')
 
 describe('embl', function() {
     describe('tools', function() {
-        describe('#getVintValue()', function() {
+        describe('#readVint()', function() {
+            function readVint(buffer, expected) {
+                var vint = ebml.tools.readVint(buffer, 0);
+                assert.equal(expected, vint.value);
+                assert.equal(buffer.length, vint.length);
+            }
             it('should return the correct value for all 1 byte ints', function() {
                 for(var i=0;i<0x80;i++) {
-                    var b = new Buffer([i | 0x80])
-                    var res = null;
-                    assert.equal(
-                        i,
-                        res = ebml.tools.getVintValue(b, 1, 0),
-                        'wrong result for 0x' + b.toString('hex') + ' (is: '+res+' | should '+i+')'
-                    )
+                    readVint(new Buffer([i | 0x80]), i);
                 }
+            })
+            it('should return the correct value for 1 byte int with non-zero start', function() {
+                var b = new Buffer([0x00, 0x81]);
+                var vint = ebml.tools.readVint(b, 1);
+                assert.equal(1, vint.value);
+                assert.equal(1, vint.length);
             })
             it('should return the correct value for all 2 byte ints', function() {
                 for(var i=0;i<0x40;i++) for(j=0;j<0xff;j++) {
-                    var b = new Buffer([i | 0x40, j])
-                    var x = (i << 8) + j
-                    var res = null;
-                    assert.equal(
-                        x,
-                        res = ebml.tools.getVintValue(b, 2, 0),
-                        'wrong result for 0x' + b.toString('hex') + ' (is: '+res+' | should '+x+')'
-                    )
+                    readVint(new Buffer([i | 0x40, j]), (i << 8) + j);
                 }
             })
             it('should return the correct value for all 3 byte ints', function() {
                 for(var i=0;i<0x20;i++) for(j=0;j<0xff;j+=2)  for(k=0;k<0xff;k+=3) {
-                    var b = new Buffer([i | 0x20, j, k])
-                    var x = (i << 16) + (j << 8) + k
-                    var res = null;
-                    assert.equal(
-                        x,
-                        res = ebml.tools.getVintValue(b, 3, 0),
-                        'wrong result for 0x' + b.toString('hex') + ' (is: '+res+' | should '+x+')'
-                    )
+                    readVint(new Buffer([i | 0x20, j, k]), (i << 16) + (j << 8) + k);
                 }
             })
             // not brute forcing any more bytes, takes sooo long
-            it('should return the correct value for 4 byte int min value', function() {
-                var b = new Buffer([0x10, 0x20, 0x00, 0x00]);
-                var x = 2097152; // (2^21)
-                assert.equal(
-                    x,
-                    res = ebml.tools.getVintValue(b, 4, 0),
-                    'wrong result for 0x' + b.toString('hex') + ' (is: '+res+' | should '+x+')'
-                )
+            it('should return the correct value for 4 byte int min/max values', function() {
+                readVint(new Buffer([0x10, 0x20, 0x00, 0x00]), Math.pow(2, 21));
+                readVint(new Buffer([0x1F, 0xFF, 0xFF, 0xFF]), Math.pow(2, 28) - 1);
             })
-            it('should return the correct value for 4 byte int max value', function() {
-                var b = new Buffer([0x1F, 0xFF, 0xFF, 0xFF]);
-                var x = 268435455; // (2^28 - 1)
-                assert.equal(
-                    x,
-                    res = ebml.tools.getVintValue(b, 4, 0),
-                    'wrong result for 0x' + b.toString('hex') + ' (is: '+res+' | should '+x+')'
-                )
+            it('should return the correct value for 5 byte int min/max values', function() {
+                readVint(new Buffer([0x08, 0x10, 0x00, 0x00, 0x00]), Math.pow(2, 28));
+                readVint(new Buffer([0x0F, 0xFF, 0xFF, 0xFF, 0xFF]), Math.pow(2, 35) - 1);
             })
-            it('should return the correct value for 5 byte int min value', function() {
-                var b = new Buffer([0x08, 0x10, 0x00, 0x00, 0x00]);
-                var x = 268435456; // (2^28)
-                assert.equal(
-                    x,
-                    res = ebml.tools.getVintValue(b, 5, 0),
-                    'wrong result for 0x' + b.toString('hex') + ' (is: '+res+' | should '+x+')'
-                )
+            it('should return the correct value for 6 byte int min/max values', function() {
+                readVint(new Buffer([0x04, 0x08, 0x00, 0x00, 0x00, 0x00]), Math.pow(2, 35));
+                readVint(new Buffer([0x07, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF]), Math.pow(2, 42) - 1);
             })
-            it('should return the correct value for 5 byte int max value', function() {
-                var b = new Buffer([0x0F, 0xFF, 0xFF, 0xFF, 0xFF]);
-                var x = 34359738367; // (2^35 - 1)
-                assert.equal(
-                    x,
-                    res = ebml.tools.getVintValue(b, 5, 0),
-                    'wrong result for 0x' + b.toString('hex') + ' (is: '+res+' | should '+x+')'
-                )
-            })
-            it('should return the correct value for 6 byte int min value', function() {
-                var b = new Buffer([0x04, 0x08, 0x00, 0x00, 0x00, 0x00]);
-                var x = 34359738368; // (2^35)
-                assert.equal(
-                    x,
-                    res = ebml.tools.getVintValue(b, 6, 0),
-                    'wrong result for 0x' + b.toString('hex') + ' (is: '+res+' | should '+x+')'
-                )
-            })
-            it('should return the correct value for 6 byte int max value', function() {
-                var b = new Buffer([0x07, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF]);
-                var x = 4398046511103; // (2^42 - 1)
-                assert.equal(
-                    x,
-                    res = ebml.tools.getVintValue(b, 6, 0),
-                    'wrong result for 0x' + b.toString('hex') + ' (is: '+res+' | should '+x+')'
-                )
-            })
-            it('should return the correct value for 7 byte int min value', function() {
-                var b = new Buffer([0x02, 0x04, 0x00, 0x00, 0x00, 0x00, 0x00]);
-                var x = 4398046511104; // (2^42)
-                assert.equal(
-                    x,
-                    res = ebml.tools.getVintValue(b, 7, 0),
-                    'wrong result for 0x' + b.toString('hex') + ' (is: '+res+' | should '+x+')'
-                )
-            })
-            it('should return the correct value for 7 byte int max value', function() {
-                var b = new Buffer([0x03, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF]);
-                var x = 562949953421311; // (2^49 - 1)
-                assert.equal(
-                    x,
-                    res = ebml.tools.getVintValue(b, 7, 0),
-                    'wrong result for 0x' + b.toString('hex') + ' (is: '+res+' | should '+x+')'
-                )
+            it('should return the correct value for 7 byte int min/max values', function() {
+                readVint(new Buffer([0x02, 0x04, 0x00, 0x00, 0x00, 0x00, 0x00]), Math.pow(2, 42));
+                readVint(new Buffer([0x03, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF]), Math.pow(2, 49) - 1);
             })
             it('should return the correct value for 8 byte int min value', function() {
-                var b = new Buffer([0x01, 0x02, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00]);
-                var x = 562949953421312; // (2^49)
-                assert.equal(
-                    x,
-                    res = ebml.tools.getVintValue(b, 8, 0),
-                    'wrong result for 0x' + b.toString('hex') + ' (is: '+res+' | should '+x+')'
-                )
+                readVint(new Buffer([0x01, 0x02, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00]), Math.pow(2, 49));
             })
-            it('should return the correct value for the max representable JS number (2^52)', function() {
-                var b = new Buffer([0x01, 0x20, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00]);
-                var x = 9007199254740992; // (2^52)
-                assert.equal(
-                    x,
-                    res = ebml.tools.getVintValue(b, 8, 0),
-                    'wrong result for 0x' + b.toString('hex') + ' (is: '+res+' | should '+x+')'
-                )
+            it('should return the correct value for the max representable JS number (2^53)', function() {
+                readVint(new Buffer([0x01, 0x20, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00]), Math.pow(2, 53));
             })
-            it('should throw for more than max representable JS number (2^52 + 1)', function() {
-                var b = new Buffer([0x01, 0x20, 0x00, 0x00, 0x00, 0x00, 0x00, 0x01]);
+            it('should throw for more than max representable JS number (2^53 + 1)', function() {
                 assert.throws(function() {
-                    ebml.tools.getVintValue(b, 8, 0);
+                    ebml.tools.readVint(new Buffer([0x01, 0x20, 0x00, 0x00, 0x00, 0x00, 0x00, 0x01]));
                 })
             })
             it('should throw for more than max representable JS number (8 byte int max value)', function() {
-                var b = new Buffer([0x01, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF]);
                 assert.throws(function() {
-                    ebml.tools.getVintValue(b, 8, 0);
+                    ebml.tools.readVint(new Buffer([0x01, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF]));
                 })
             })
             it('should throw for 9+ byte int values', function() {
-                var b = new Buffer([0x00, 0x80, 0x00, 0x00, 0x00, 0x00, 0x00, 0xFF, 0xFF]);
                 assert.throws(function() {
-                    ebml.tools.getVintValue(b, 9, 0);
+                    ebml.tools.readVint([0x00, 0x80, 0x00, 0x00, 0x00, 0x00, 0x00, 0xFF, 0xFF]);
                 })
             })
-        })
 
-        describe('#getVintLength()', function() {
-            it('should return the correct length for all 1 byte ints', function() {
-                for(var i=0x80;i<0xFF;i++) {
-                    assert.equal(1, ebml.tools.getVintLength(i), 'wrong result for 0x' + i.toString(16))
-                }
-            })
-            it('should return the correct length for all 2 byte ints', function() {
-                for(var i=0x40;i<0x80;i++) {
-                    assert.equal(2, ebml.tools.getVintLength(i), 'wrong result for 0x' + i.toString(16))
-                }
-            })
-            it('should return the correct length for all 3 byte ints', function() {
-                for(var i=0x20;i<0x40;i++) {
-                    assert.equal(3, ebml.tools.getVintLength(i), 'wrong result for 0x' + i.toString(16))
-                }
-            })
-            it('should return the correct length for all 4 byte ints', function() {
-                for(var i=0x10;i<0x20;i++) {
-                    assert.equal(4, ebml.tools.getVintLength(i), 'wrong result for 0x' + i.toString(16))
-                }
-            })
-            it('should return the correct length for all 5 byte ints', function() {
-                for(var i=0x08;i<0x0F;i++) {
-                    assert.equal(5, ebml.tools.getVintLength(i), 'wrong result for 0x' + i.toString(16))
-                }
-            })
-            it('should return the correct length for all 6 byte ints', function() {
-                for(var i=0x04;i<0x08;i++) {
-                    assert.equal(6, ebml.tools.getVintLength(i), 'wrong result for 0x' + i.toString(16))
-                }
-            })
-            it('should return the correct length for all 7 byte ints', function() {
-                assert.equal(7, ebml.tools.getVintLength(0x02), 'wrong result for 0x02')
-                assert.equal(7, ebml.tools.getVintLength(0x03), 'wrong result for 0x03')
-            })
-            it('should return the correct length for all 8 byte ints', function() {
-                assert.equal(8, ebml.tools.getVintLength(0x01), 'wrong result for 0x01')
-            })
         })
-
         describe('#writeVint()', function() {
             it('should throw when writing -1', function() {
                 var buffer = new Buffer(8)
