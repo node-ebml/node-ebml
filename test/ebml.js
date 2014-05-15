@@ -79,9 +79,10 @@ describe('embl', function() {
                     ebml.tools.writeVint(-1)
                 }, /Unrepresentable value/);
             })
-            it('should write 1 byte int min/max values', function() {
-                writeVint(0, new Buffer([0x80]));
-                writeVint(Math.pow(2, 7) - 1, new Buffer([0xFF]));
+            it('should write all 1 byte ints', function() {
+                for(var i=0;i<0x80;i++) {
+                    writeVint(i, new Buffer([i | 0x80]));
+                }
             })
             it('should write 2 byte int min/max values', function() {
                 writeVint(Math.pow(2, 7), new Buffer([0x40, 0x80]));
