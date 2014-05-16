@@ -24,8 +24,14 @@
     "debug": "~0.7.2"
   },
   "devDependencies": {
-    "mocha": "~1.12.1",
-    "matcha": "~0.3.0"
+    "gulp": "^3.6.2",
+    "gulp-esformatter": "^0.2.0",
+    "gulp-fixmyjs": "0.0.10",
+    "gulp-jshint": "^1.6.1",
+    "jsfmt": "^0.2.0",
+    "jshint-stylish": "^0.2.0",
+    "matcha": "~0.3.0",
+    "mocha": "~1.12.1"
   },
   "author": "Mark Schmale <masch@masch.it>",
   "license": "MIT",
