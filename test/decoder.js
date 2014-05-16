@@ -105,13 +105,13 @@ describe('embl', function() {
                 assert.equal(tags, 2); // two tags
                 assert.equal(data.tag, 0x0a45dfa3);
                 assert.equal(data.tagStr, "1a45dfa3");
-                assert.equal(data.dataSize, 0x81 - 0x80);
+                assert.equal(data.dataSize, 4);
                 assert.equal(data.type, 'm');
                 assert.equal(data.data, undefined);
                 done();
             });
             decoder.write(new Buffer([0x1a, 0x45, 0xdf, 0xa3]));
-            decoder.write(new Buffer([0x81, 0x42, 0x86, 0x81, 0x00]));
+            decoder.write(new Buffer([0x84, 0x42, 0x86, 0x81, 0x00]));
         });
     });
 });

@@ -4,8 +4,12 @@ var fixmyjs = require('gulp-fixmyjs');
 var stylish = require('jshint-stylish');
 var esformatter = require('gulp-esformatter');
 
+var paths = {
+    'js': ['*.js', '**/*.js', '!node_modules/**/*.js']
+};
+
 gulp.task('default', function() {
-    return gulp.src(['*.js', '**/*.js', '!node_modules/**/*.js'])
+    return gulp.src(paths.js)
     .pipe(jshint())
     .pipe(jshint.reporter('default'))
     .pipe(esformatter({
@@ -15,3 +19,8 @@ gulp.task('default', function() {
     }))
     .pipe(gulp.dest('.'));
 });
+
+// Not a good idea...
+// gulp.task('watch', function() {
+//     gulp.watch(paths.js, ['default']);
+// });
