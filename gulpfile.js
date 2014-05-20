@@ -3,6 +3,7 @@ var jshint = require('gulp-jshint');
 var fixmyjs = require('gulp-fixmyjs');
 var stylish = require('jshint-stylish');
 var esformatter = require('gulp-esformatter');
+var os = require('os');
 
 var paths = {
     'js': ['*.js', '**/*.js', '!node_modules/**/*.js']
@@ -15,6 +16,9 @@ gulp.task('default', function() {
     .pipe(esformatter({
         indent: {
             value: '    '
+        },
+        lineBreak: {
+            value: os.EOL,
         }
     }))
     .pipe(gulp.dest('.'));
