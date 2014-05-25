@@ -1,1 +1,1 @@
-module.exports = require('./lib/ebml/index.js')
+module.exports = require('./lib/ebml/index.js');

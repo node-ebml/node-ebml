@@ -1,107 +1,139 @@
-var ebml = require('../lib/ebml/index.js')
-  , assert = require('assert')
+var ebml = require('../lib/ebml/index.js'),
+    assert = require('assert');
 
 describe('embl', function() {
     describe('tools', function() {
-        describe('#calcDataSize()', function() {
-            it('should return the correct size for 1 byte ints', function() {
-                for(var i=0;i<0x80;i++) {
-                    var b = new Buffer([i | 0x80])
-                    var res = null;
-                    assert.equal(
-                        i,
-                        res = ebml.tools.calcDataSize(b),
-                        'wrong result for 0x' + b.toString('hex') + ' (is: '+res+' | should '+i+')'
-                    )
+        describe('#readVint()', function() {
+            function readVint(buffer, expected) {
+                var vint = ebml.tools.readVint(buffer, 0);
+                assert.equal(expected, vint.value);
+                assert.equal(buffer.length, vint.length);
+            }
+            it('should read the correct value for all 1 byte ints', function() {
+                for (var i = 0; i < 0x80; i++) {
+                    readVint(new Buffer([i | 0x80]), i);
                 }
-            })
-            it('should return the correct size for 2 byte ints', function() {
-                for(var i=0;i<0x40;i++) for(j=0;j<0xff;j++) {
-                    var b = new Buffer([i | 0x40, j])
-                    var x = (i << 8) + j
-                    var res = null;
-                    assert.equal(
-                        x,
-                        res = ebml.tools.calcDataSize(b),
-                        'wrong result for 0x' + b.toString('hex') + ' (is: '+res+' | should '+x+')'
-                    )
+            });
+            it('should read the correct value for 1 byte int with non-zero start', function() {
+                var b = new Buffer([0x00, 0x81]);
+                var vint = ebml.tools.readVint(b, 1);
+                assert.equal(1, vint.value);
+                assert.equal(1, vint.length);
+            });
+            it('should read the correct value for all 2 byte ints', function() {
+                for (var i = 0; i < 0x40; i++)
+                    for (j = 0; j < 0xff; j++) {
+                        readVint(new Buffer([i | 0x40, j]), (i << 8) + j);
                 }
-            })
-            it('should return the correct size for 3 byte ints', function() {
-                for(var i=0;i<0x20;i++) for(j=0;j<0xff;j+=2)  for(k=0;k<0xff;k+=3) {
-                    var b = new Buffer([i | 0x20, j, k])
-                    var x = (i << 16) + (j << 8) + k
-                    var res = null;
-                    assert.equal(
-                        x,
-                        res = ebml.tools.calcDataSize(b),
-                        'wrong result for 0x' + b.toString('hex') + ' (is: '+res+' | should '+x+')'
-                    )
+            });
+            it('should read the correct value for all 3 byte ints', function() {
+                for (var i = 0; i < 0x20; i++)
+                    for (j = 0; j < 0xff; j += 2)
+                        for (k = 0; k < 0xff; k += 3) {
+                            readVint(new Buffer([i | 0x20, j, k]), (i << 16) + (j << 8) + k);
                 }
-            })
-            // not testing more bytes, takes sooo long
-        })
-        describe('#getTagLength()', function() {
-            it('should return 1 for tags that are supposed to be 1 byte long', function() {
-                for(var i=0x80;i<0xFF;i++) {
-                    assert.equal(1, ebml.tools.getTagLength(i), 'wrong result for 0x' + i.toString(16))
+            });
+            // not brute forcing any more bytes, takes sooo long
+            it('should read the correct value for 4 byte int min/max values', function() {
+                readVint(new Buffer([0x10, 0x20, 0x00, 0x00]), Math.pow(2, 21));
+                readVint(new Buffer([0x1F, 0xFF, 0xFF, 0xFF]), Math.pow(2, 28) - 1);
+            });
+            it('should read the correct value for 5 byte int min/max values', function() {
+                readVint(new Buffer([0x08, 0x10, 0x00, 0x00, 0x00]), Math.pow(2, 28));
+                readVint(new Buffer([0x0F, 0xFF, 0xFF, 0xFF, 0xFF]), Math.pow(2, 35) - 1);
+            });
+            it('should read the correct value for 6 byte int min/max values', function() {
+                readVint(new Buffer([0x04, 0x08, 0x00, 0x00, 0x00, 0x00]), Math.pow(2, 35));
+                readVint(new Buffer([0x07, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF]), Math.pow(2, 42) - 1);
+            });
+            it('should read the correct value for 7 byte int min/max values', function() {
+                readVint(new Buffer([0x02, 0x04, 0x00, 0x00, 0x00, 0x00, 0x00]), Math.pow(2, 42));
+                readVint(new Buffer([0x03, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF]), Math.pow(2, 49) - 1);
+            });
+            it('should read the correct value for 8 byte int min value', function() {
+                readVint(new Buffer([0x01, 0x02, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00]), Math.pow(2, 49));
+            });
+            it('should read the correct value for the max representable JS number (2^53)', function() {
+                readVint(new Buffer([0x01, 0x20, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00]), Math.pow(2, 53));
+            });
+            it('should throw for more than max representable JS number (2^53 + 1)', function() {
+                assert.throws(function() {
+                    ebml.tools.readVint(new Buffer([0x01, 0x20, 0x00, 0x00, 0x00, 0x00, 0x00, 0x01]));
+                }, /Unrepresentable value/);
+            });
+            it('should throw for more than max representable JS number (8 byte int max value)', function() {
+                assert.throws(function() {
+                    ebml.tools.readVint(new Buffer([0x01, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF]));
+                }, /Unrepresentable value/);
+            });
+            it('should throw for 9+ byte int values', function() {
+                assert.throws(function() {
+                    ebml.tools.readVint(new Buffer([0x00, 0x80, 0x00, 0x00, 0x00, 0x00, 0x00, 0xFF, 0xFF]));
+                }, /Unrepresentable length/);
+            });
+        });
+        describe('#writeVint()', function() {
+            function writeVint(value, expected) {
+                var actual = ebml.tools.writeVint(value);
+                assert.equal(expected.toString('hex'), actual.toString('hex'));
+            }
+            it('should throw when writing -1', function() {
+                assert.throws(function() {
+                    ebml.tools.writeVint(-1);
+                }, /Unrepresentable value/);
+            });
+            it('should write all 1 byte ints', function() {
+                for (var i = 0; i < 0x80; i++) {
+                    writeVint(i, new Buffer([i | 0x80]));
                 }
-            })
-            it('should return 2 for tags that are supposed to be 2 byte long', function() {
-                for(var i=0x40;i<0x80;i++) {
-                    assert.equal(2, ebml.tools.getTagLength(i), 'wrong result for 0x' + i.toString(16))
-                }
-            })
-            it('should return 3 for tags that are supposed to be 3 byte long', function() {
-                for(var i=0x20;i<0x40;i++) {
-                    assert.equal(3, ebml.tools.getTagLength(i), 'wrong result for 0x' + i.toString(16))
-                }
-            })
-            it('should return 4 for tags that are supposed to be 4 byte long', function() {
-                for(var i=0x10;i<0x20;i++) {
-                    assert.equal(4, ebml.tools.getTagLength(i), 'wrong result for 0x' + i.toString(16))
-                }
-            })
-        })
+            });
+            it('should write 2 byte int min/max values', function() {
+                writeVint(Math.pow(2, 7), new Buffer([0x40, 0x80]));
+                writeVint(Math.pow(2, 14) - 1, new Buffer([0x7F, 0xFF]));
+            });
+            it('should write 3 byte int min/max values', function() {
+                writeVint(Math.pow(2, 14), new Buffer([0x20, 0x40, 0x00]));
+                writeVint(Math.pow(2, 21) - 1, new Buffer([0x3F, 0xFF, 0xFF]));
+            });
+            it('should write 4 byte int min/max values', function() {
+                writeVint(Math.pow(2, 21), new Buffer([0x10, 0x20, 0x00, 0x00]));
+                writeVint(Math.pow(2, 28) - 1, new Buffer([0x1F, 0xFF, 0xFF, 0xFF]));
+            });
+            it('should write 5 byte int min/max value', function() {
+                writeVint(Math.pow(2, 28), new Buffer([0x08, 0x10, 0x00, 0x00, 0x00]));
+                writeVint(Math.pow(2, 35) - 1, new Buffer([0x0F, 0xFF, 0xFF, 0xFF, 0xFF]));
+            });
+            it('should write 6 byte int min/max value', function() {
+                writeVint(Math.pow(2, 35), new Buffer([0x04, 0x08, 0x00, 0x00, 0x00, 0x00]));
+                writeVint(Math.pow(2, 42) - 1, new Buffer([0x07, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF]));
+            });
+            it('should write 7 byte int min/max value', function() {
+                writeVint(Math.pow(2, 42), new Buffer([0x02, 0x04, 0x00, 0x00, 0x00, 0x00, 0x00]));
+                writeVint(Math.pow(2, 49) - 1, new Buffer([0x03, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF]));
+            });
+            it('should write the correct value for 8 byte int min value', function() {
+                writeVint(Math.pow(2, 49), new Buffer([0x01, 0x02, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00]));
+            });
+            it('should write the correct value for the max representable JS number (2^53)', function() {
+                writeVint(Math.pow(2, 53), new Buffer([0x01, 0x20, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00]));
+            });
+            // Can't prevent this, 2^53 + 1 === 2^53
+            // it('should throw for more than max representable JS number (2^53 + 1)', function() {
+            //     assert.throws(function() {
+            //         ebml.tools.writeVint(Math.pow(2, 53) + 1));
+            //     }, /Unrepresentable value/)
+            // })
+            it('should throw for more than max representable JS number (8 byte int max value)', function() {
+                assert.throws(function() {
+                    ebml.tools.writeVint(Math.pow(2, 56) + 1);
+                }, /Unrepresentable value/);
+            });
+            it('should throw for 9+ byte int values', function() {
+                assert.throws(function() {
+                    ebml.tools.writeVint(Math.pow(2, 56) + 1);
+                }, /Unrepresentable value/);
+            });
 
-        describe('#getDataSizeLength()', function() {
-            it('should return 1 for tags that are supposed to be 1 byte long', function() {
-                for(var i=0x80;i<0xFF;i++) {
-                    assert.equal(1, ebml.tools.getDataSizeLength(i), 'wrong result for 0x' + i.toString(16))
-                }
-            })
-            it('should return 2 for tags that are supposed to be 2 byte long', function() {
-                for(var i=0x40;i<0x80;i++) {
-                    assert.equal(2, ebml.tools.getDataSizeLength(i), 'wrong result for 0x' + i.toString(16))
-                }
-            })
-            it('should return 3 for tags that are supposed to be 3 byte long', function() {
-                for(var i=0x20;i<0x40;i++) {
-                    assert.equal(3, ebml.tools.getDataSizeLength(i), 'wrong result for 0x' + i.toString(16))
-                }
-            })
-            it('should return 4 for tags that are supposed to be 4 byte long', function() {
-                for(var i=0x10;i<0x20;i++) {
-                    assert.equal(4, ebml.tools.getDataSizeLength(i), 'wrong result for 0x' + i.toString(16))
-                }
-            })
-            it('should return 5 for tags that are supposed to be 5 byte long', function() {
-                for(var i=0x08;i<0x0F;i++) {
-                    assert.equal(5, ebml.tools.getDataSizeLength(i), 'wrong result for 0x' + i.toString(16))
-                }
-            })
-            it('should return 6 for tags that are supposed to be 6 byte long', function() {
-                for(var i=0x04;i<0x08;i++) {
-                    assert.equal(6, ebml.tools.getDataSizeLength(i), 'wrong result for 0x' + i.toString(16))
-                }
-            })
-            it('should return 7 for tags that are supposed to be 7 byte long', function() {
-                assert.equal(7, ebml.tools.getDataSizeLength(0x02), 'wrong result for 0x02')
-                assert.equal(7, ebml.tools.getDataSizeLength(0x03), 'wrong result for 0x03')
-            })
-            it('should return 8 for tags that are supposed to be 8 byte long', function() {
-                assert.equal(8, ebml.tools.getDataSizeLength(0x01), 'wrong result for 0x01')
-            })
-        })
-    })
-})
+        });
+    });
+});
