@@ -1,13 +1,13 @@
 {
   "name": "ebml",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "ebml parser",
   "main": "index.js",
   "directories": {
     "test": "test"
   },
   "scripts": {
-    "test": "node node_modules/.bin/mocha test/"
+    "test": "mocha test/"
   },
   "repository": {
     "type": "git",
