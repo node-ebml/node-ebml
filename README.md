@@ -24,5 +24,8 @@ MIT
 
 # contributors
 
+* [Chris Price](https://github.com/chrisprice)
+* [Davy Van Deursen](https://github.com/dvdeurse)
 * [Manuel Wiedenmann](https://github.com/fsmanuel)
 * [Mark Schmale](https://github.com/themasch)
+* [Max Ogden](https://github.com/maxogden)
