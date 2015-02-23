@@ -16,9 +16,6 @@ gulp.task('default', function() {
     .pipe(esformatter({
         indent: {
             value: '    '
-        },
-        lineBreak: {
-            value: os.EOL,
         }
     }))
     .pipe(gulp.dest('.'));
