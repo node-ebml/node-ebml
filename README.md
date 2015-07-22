@@ -24,8 +24,11 @@ MIT
 
 # contributors
 
+(in alphabetical order)
+
 * [Chris Price](https://github.com/chrisprice)
 * [Davy Van Deursen](https://github.com/dvdeurse)
+* [Ed Markowski](https://github.com/siphontv)
 * [Manuel Wiedenmann](https://github.com/fsmanuel)
 * [Mark Schmale](https://github.com/themasch)
 * [Max Ogden](https://github.com/maxogden)

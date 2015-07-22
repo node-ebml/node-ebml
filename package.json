@@ -1,6 +1,6 @@
 {
   "name": "ebml",
-  "version": "0.2.0",
+  "version": "1.0.0",
   "description": "ebml parser",
   "main": "index.js",
   "directories": {
@@ -13,13 +13,7 @@
     "type": "git",
     "url": "git://github.com/themasch/node-ebml"
   },
-  "keywords": [
-    "ebml",
-    "webm",
-    "mkv",
-    "matroska",
-    "format"
-  ],
+  "keywords": ["ebml", "webm", "mkv", "matroska", "format"],
   "dependencies": {
     "buffers": "^0.1.1",
     "debug": "~0.7.2"
@@ -35,6 +29,22 @@
     "mocha": "~1.12.1"
   },
   "author": "Mark Schmale <masch@masch.it>",
+  "contributors": [{
+    "name": "Chris Price",
+    "email": "price.c@gmail.com"
+  }, {
+    "name": "Manuel Wiedenmann",
+    "email": "manuel@funkensturm.de"
+  }, {
+    "name": "Ed Markowski",
+    "email": "siphon@protonmail.com"
+  }, {
+    "name": "Davy Van Deursen",
+    "email": "d.vandeursen@evs.com"
+  }, {
+    "name": "Max Ogden",
+    "email": "max@maxogden.com"
+  }],
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/themasch/node-ebml/issues"
