@@ -1,4 +1,4 @@
-# EBML [![Build Status](https://travis-ci.org/themasch/node-ebml.png?branch=master)](https://travis-ci.org/themasch/node-ebml)
+# EBML [![Build Status](https://travis-ci.org/themasch/node-ebml.png?branch=master)](https://travis-ci.org/themasch/node-ebml) [![NPM](https://nodei.co/npm/ebml.png?compact=true)](https://www.npmjs.com/package/ebml)
 
 [EBML](http://ebml.sourceforge.net/) stands for Extensible Binary Meta-Language
 and is some what of a binary version of XML.
@@ -32,3 +32,4 @@ MIT
 * [Manuel Wiedenmann](https://github.com/fsmanuel)
 * [Mark Schmale](https://github.com/themasch)
 * [Max Ogden](https://github.com/maxogden)
+* [Oliver Walzer](https://github.com/owcd)
