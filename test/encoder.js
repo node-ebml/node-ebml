@@ -13,13 +13,23 @@ describe('embl', function() {
         }
         it('should write a single tag', function(done) {
             var encoder = createEncoder([0x42, 0x86, 0x81, 0x01], done);
-            encoder.writeTag('EBMLVersion', new Buffer([0x01]));
+            encoder.write(['tag', {
+                name: 'EBMLVersion',
+                data: new Buffer([0x01])
+            }]);
         });
         it('should write a tag with a single child', function(done) {
             var encoder = createEncoder([0x1a, 0x45, 0xdf, 0xa3, 0x84, 0x42, 0x86, 0x81, 0x00], done);
-            encoder.startTag('EBML');
-            encoder.writeTag('EBMLVersion', new Buffer([0x00]));
-            encoder.endTag();
+            encoder.write(['start', {
+                name: 'EBML',
+            }]);
+            encoder.write(['tag', {
+                name: 'EBMLVersion',
+                data: new Buffer([0x00])
+            }]);
+            encoder.write(['end', {
+                name: 'EBML',
+            }]);
         });
     });
 });

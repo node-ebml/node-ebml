@@ -66,7 +66,10 @@ describe('embl', function() {
 
         it('should emit correct tag events for simple data', function(done) {
             var decoder = new ebml.Decoder();
-            decoder.on('EBMLVersion', function(data) {
+            decoder.on('data', function(data) {
+                var state = data[0];
+                data = data[1];
+                assert.equal(state, 'tag');
                 assert.equal(data.tag, 0x286);
                 assert.equal(data.tagStr, "4286");
                 assert.equal(data.dataSize, 0x01);
@@ -80,7 +83,10 @@ describe('embl', function() {
         it('should emit correct EBML tag events for master tags', function(done) {
             var decoder = new ebml.Decoder();
 
-            decoder.on('EBML', function(data) {
+            decoder.on('data', function(data) {
+                var state = data[0];
+                data = data[1];
+                assert.equal(state, 'start');
                 assert.equal(data.tag, 0x0a45dfa3);
                 assert.equal(data.tagStr, "1a45dfa3");
                 assert.equal(data.dataSize, 0);
@@ -95,20 +101,20 @@ describe('embl', function() {
         it('should emit correct EBML:end events for master tags', function(done) {
             var decoder = new ebml.Decoder();
             var tags = 0;
-            decoder.on('EBML', function(data) {
-                tags++;
-            });
-            decoder.on('EBMLVersion', function(data) {
-                tags++;
-            });
-            decoder.on('EBML:end', function(data) {
-                assert.equal(tags, 2); // two tags
-                assert.equal(data.tag, 0x0a45dfa3);
-                assert.equal(data.tagStr, "1a45dfa3");
-                assert.equal(data.dataSize, 4);
-                assert.equal(data.type, 'm');
-                assert.equal(data.data, undefined);
-                done();
+            decoder.on('data', function(data) {
+                var state = data[0];
+                data = data[1];
+                if(state != 'end') {
+                    tags++;
+                } else {
+                    assert.equal(tags, 2); // two tags
+                    assert.equal(data.tag, 0x0a45dfa3);
+                    assert.equal(data.tagStr, "1a45dfa3");
+                    assert.equal(data.dataSize, 4);
+                    assert.equal(data.type, 'm');
+                    assert.equal(data.data, undefined);
+                    done();
+                }
             });
             decoder.write(new Buffer([0x1a, 0x45, 0xdf, 0xa3]));
             decoder.write(new Buffer([0x84, 0x42, 0x86, 0x81, 0x00]));
