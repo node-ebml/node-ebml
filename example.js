@@ -3,11 +3,16 @@ var fs = require('fs');
 
 var decoder = new ebml.Decoder();
 
-decoder.on('Cluster', function(data) {
-    console.log(data.name, data);
-});
-decoder.on('Cluster:end', function(data) {
-    console.log(data.name + ':end', data);
+decoder.on('data', function(data) {
+  var state = data[0];
+  var tagObject = data[1];
+
+  switch (tagObject.name) {
+    case 'Cluster':
+      console.log(tagObject.name + ':' + state, tagObject);
+      break;
+    default:
+  }
 });
 
 fs.readFile('media/test.webm', function(err, data) {
