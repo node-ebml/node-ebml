@@ -80,36 +80,36 @@ describe('embl', function() {
                 }, /Unrepresentable value/);
             });
             it('should write all 1 byte ints', function() {
-                for (var i = 0; i < 0x80; i++) {
+                for (var i = 0; i < 0x80 - 1; i++) {
                     writeVint(i, new Buffer([i | 0x80]));
                 }
             });
             it('should write 2 byte int min/max values', function() {
-                writeVint(Math.pow(2, 7), new Buffer([0x40, 0x80]));
-                writeVint(Math.pow(2, 14) - 1, new Buffer([0x7F, 0xFF]));
+                writeVint(Math.pow(2, 7) - 1, new Buffer([0x40, 0x7F]));
+                writeVint(Math.pow(2, 14) - 2, new Buffer([0x7F, 0xFE]));
             });
             it('should write 3 byte int min/max values', function() {
-                writeVint(Math.pow(2, 14), new Buffer([0x20, 0x40, 0x00]));
-                writeVint(Math.pow(2, 21) - 1, new Buffer([0x3F, 0xFF, 0xFF]));
+                writeVint(Math.pow(2, 14) - 1, new Buffer([0x20, 0x3F, 0xFF]));
+                writeVint(Math.pow(2, 21) - 2, new Buffer([0x3F, 0xFF, 0xFE]));
             });
             it('should write 4 byte int min/max values', function() {
-                writeVint(Math.pow(2, 21), new Buffer([0x10, 0x20, 0x00, 0x00]));
-                writeVint(Math.pow(2, 28) - 1, new Buffer([0x1F, 0xFF, 0xFF, 0xFF]));
+                writeVint(Math.pow(2, 21) - 1, new Buffer([0x10, 0x1F, 0xFF, 0xFF]));
+                writeVint(Math.pow(2, 28) - 2, new Buffer([0x1F, 0xFF, 0xFF, 0xFE]));
             });
             it('should write 5 byte int min/max value', function() {
-                writeVint(Math.pow(2, 28), new Buffer([0x08, 0x10, 0x00, 0x00, 0x00]));
-                writeVint(Math.pow(2, 35) - 1, new Buffer([0x0F, 0xFF, 0xFF, 0xFF, 0xFF]));
+                writeVint(Math.pow(2, 28) - 1, new Buffer([0x08, 0x0F, 0xFF, 0xFF, 0xFF]));
+                writeVint(Math.pow(2, 35) - 2, new Buffer([0x0F, 0xFF, 0xFF, 0xFF, 0xFE]));
             });
             it('should write 6 byte int min/max value', function() {
-                writeVint(Math.pow(2, 35), new Buffer([0x04, 0x08, 0x00, 0x00, 0x00, 0x00]));
-                writeVint(Math.pow(2, 42) - 1, new Buffer([0x07, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF]));
+                writeVint(Math.pow(2, 35) - 1, new Buffer([0x04, 0x07, 0xFF, 0xFF, 0xFF, 0xFF]));
+                writeVint(Math.pow(2, 42) - 2, new Buffer([0x07, 0xFF, 0xFF, 0xFF, 0xFF, 0xFE]));
             });
             it('should write 7 byte int min/max value', function() {
-                writeVint(Math.pow(2, 42), new Buffer([0x02, 0x04, 0x00, 0x00, 0x00, 0x00, 0x00]));
-                writeVint(Math.pow(2, 49) - 1, new Buffer([0x03, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF]));
+                writeVint(Math.pow(2, 42) - 1, new Buffer([0x02, 0x03, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF]));
+                writeVint(Math.pow(2, 49) - 2, new Buffer([0x03, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFE]));
             });
             it('should write the correct value for 8 byte int min value', function() {
-                writeVint(Math.pow(2, 49), new Buffer([0x01, 0x02, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00]));
+                writeVint(Math.pow(2, 49) - 1, new Buffer([0x01, 0x01, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF]));
             });
             it('should write the correct value for the max representable JS number (2^53)', function() {
                 writeVint(Math.pow(2, 53), new Buffer([0x01, 0x20, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00]));
