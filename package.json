@@ -1,6 +1,6 @@
 {
   "name": "ebml",
-  "version": "2.0.0",
+  "version": "2.2.0",
   "description": "ebml parser",
   "main": "index.js",
   "directories": {
@@ -11,9 +11,15 @@
   },
   "repository": {
     "type": "git",
-    "url": "git://github.com/themasch/node-ebml"
+    "url": "git://github.com/themasch/node-ebml.git"
   },
-  "keywords": ["ebml", "webm", "mkv", "matroska", "format"],
+  "keywords": [
+    "ebml",
+    "webm",
+    "mkv",
+    "matroska",
+    "format"
+  ],
   "dependencies": {
     "buffers": "^0.1.1",
     "debug": "~0.7.2"
@@ -28,28 +34,19 @@
     "matcha": "~0.3.0",
     "mocha": "~1.12.1"
   },
-  "author": "Mark Schmale <masch@masch.it>",
-  "contributors": [{
-    "name": "Chris Price",
-    "email": "price.c@gmail.com"
-  }, {
-    "name": "Manuel Wiedenmann",
-    "email": "manuel@funkensturm.de"
-  }, {
-    "name": "Ed Markowski",
-    "email": "siphon@protonmail.com"
-  }, {
-    "name": "Davy Van Deursen",
-    "email": "d.vandeursen@evs.com"
-  }, {
-    "name": "Max Ogden",
-    "email": "max@maxogden.com"
-  }, {
-    "name": "Oliver Walzer",
-    "email": "walzer@incuray.com"
-  }],
+  "contributors": [
+    "Chris Price <price.c@gmail.com>",
+    "Davy Van Deursen <d.vandeursen@evs.com>",
+    "Ed Markowski <siphon@protonmail.com>",
+    "Manuel Wiedenmann <manuel@funkensturm.de>",
+    "Mathias Buus <mathiasbuus@gmail.com>",
+    "Max Ogden <max@maxogden.com>",
+    "Oliver Walzer <walzer@incuray.com>"
+  ],
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/themasch/node-ebml/issues"
-  }
+  },
+  "homepage": "https://github.com/themasch/node-ebml#readme",
+  "author": "Mark Schmale <masch@masch.it>"
 }

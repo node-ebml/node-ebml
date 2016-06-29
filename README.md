@@ -12,11 +12,28 @@ npm install ebml
 
 # example
 
-TBD. (meanwhile see example.js)
+``` 
+var ebml = require('./index.js');
+var fs = require('fs');
+
+var decoder = new ebml.Decoder();
+
+decoder.on('data', function(chunk) {
+    console.log(chunk);
+});
+
+fs.readFile('media/test.webm', function(err, data) {
+    if (err)
+        throw err;
+    decoder.write(data);
+});
+```
 
 # state of this project
 
 Parsing should work. If it doesn't, please create [an issue](https://github.com/themasch/node-ebml/issues/new).
+
+Thanks to @chrisprice we got an encoder!
 
 # license
 
@@ -31,5 +48,6 @@ MIT
 * [Ed Markowski](https://github.com/siphontv)
 * [Manuel Wiedenmann](https://github.com/fsmanuel)
 * [Mark Schmale](https://github.com/themasch)
+* [Mathias Buus](https://github.com/mafintosh)
 * [Max Ogden](https://github.com/maxogden)
 * [Oliver Walzer](https://github.com/owcd)
