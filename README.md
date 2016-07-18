@@ -7,16 +7,16 @@ It's used for container formats like webm or [mkv](http://www.matroska.org/techn
 # install
 
 ```
-npm install ebml
+npm install ebml --save
 ```
 
 # example
 
-``` 
-var ebml = require('./index.js');
-var fs = require('fs');
+```js
+const ebml = require('./index.js');
+const fs = require('fs');
 
-var decoder = new ebml.Decoder();
+const decoder = new ebml.Decoder();
 
 decoder.on('data', function(chunk) {
     console.log(chunk);
