@@ -11,14 +11,14 @@ var paths = {
 
 gulp.task('default', function() {
     return gulp.src(paths.js)
-    .pipe(jshint())
-    .pipe(jshint.reporter('default'))
-    .pipe(esformatter({
-        indent: {
-            value: '    '
-        }
-    }))
-    .pipe(gulp.dest('.'));
+        .pipe(jshint())
+        .pipe(jshint.reporter('default'))
+        .pipe(esformatter({
+            indent: {
+                value: '    '
+            }
+        }))
+        .pipe(gulp.dest('.'));
 });
 
 // Not a good idea...
