@@ -15,14 +15,22 @@ describe('embl', function() {
             decoder.write(buffer);
         });
 
-        it('should support end === -1', function (done) {
+        it('should support end === -1', function(done) {
             var decoder = new ebml.Decoder();
             var encoder = new ebml.Encoder();
 
-            encoder.write(['start', {name: 'Cluster', start: 0, end: -1}]);
-            encoder.write(['end', {name: 'Cluster', start: 0, end: -1}]);
+            encoder.write(['start', {
+                    name: 'Cluster',
+                    start: 0,
+                    end: -1
+                }]);
+            encoder.write(['end', {
+                    name: 'Cluster',
+                    start: 0,
+                    end: -1
+                }]);
 
-            encoder.pipe(decoder).on('data', function (data) {
+            encoder.pipe(decoder).on('data', function(data) {
                 assert.equal(data[1].name, 'Cluster');
                 assert.equal(data[1].start, 0);
                 assert.equal(data[1].end, -1);

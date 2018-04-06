@@ -104,7 +104,7 @@ describe('embl', function() {
             decoder.on('data', function(data) {
                 var state = data[0];
                 data = data[1];
-                if(state != 'end') {
+                if (state != 'end') {
                     tags++;
                 } else {
                     assert.equal(tags, 2); // two tags
