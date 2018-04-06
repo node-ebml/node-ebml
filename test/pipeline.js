@@ -20,15 +20,15 @@ describe('embl', function() {
             var encoder = new ebml.Encoder();
 
             encoder.write(['start', {
-                    name: 'Cluster',
-                    start: 0,
-                    end: -1
-                }]);
+                name: 'Cluster',
+                start: 0,
+                end: -1
+            }]);
             encoder.write(['end', {
-                    name: 'Cluster',
-                    start: 0,
-                    end: -1
-                }]);
+                name: 'Cluster',
+                start: 0,
+                end: -1
+            }]);
 
             encoder.pipe(decoder).on('data', function(data) {
                 assert.equal(data[1].name, 'Cluster');
