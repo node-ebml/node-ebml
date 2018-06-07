@@ -1,6 +1,6 @@
 {
   "name": "ebml",
-  "version": "2.2.2",
+  "version": "2.2.3",
   "description": "ebml parser",
   "main": "index.js",
   "directories": {
