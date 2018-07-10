@@ -1,14 +1,15 @@
-var ebml = require('../lib/ebml/index.js'),
-    assert = require('assert');
+/* global describe, it */
+const ebml = require('../lib/ebml/index.js');
+const assert = require('assert');
 
-var STATE_TAG = 1,
+const STATE_TAG = 1,
     STATE_SIZE = 2,
     STATE_CONTENT = 3;
 
 describe('embl', function() {
     describe('Decoder', function() {
         it('should wait for more data if a tag is longer than the buffer', function() {
-            var decoder = new ebml.Decoder();
+            const decoder = new ebml.Decoder();
             decoder.write(new Buffer([0x1A, 0x45]));
 
             assert.equal(STATE_TAG, decoder._state);
@@ -17,7 +18,7 @@ describe('embl', function() {
         });
 
         it('should clear the buffer after a full tag is written in one chunk', function() {
-            var decoder = new ebml.Decoder();
+            const decoder = new ebml.Decoder();
             decoder.write(new Buffer([0x42, 0x86, 0x81, 0x01]));
 
             assert.equal(STATE_TAG, decoder._state);
@@ -26,7 +27,7 @@ describe('embl', function() {
         });
 
         it('should clear the buffer after a full tag is written in multiple chunks', function() {
-            var decoder = new ebml.Decoder();
+            const decoder = new ebml.Decoder();
 
             decoder.write(new Buffer([0x42, 0x86]));
             decoder.write(new Buffer([0x81, 0x01]));
@@ -37,7 +38,7 @@ describe('embl', function() {
         });
 
         it('should increment the cursor on each step', function() {
-            var decoder = new ebml.Decoder();
+            const decoder = new ebml.Decoder();
 
             decoder.write(new Buffer([0x42])); // 4
 
@@ -65,13 +66,13 @@ describe('embl', function() {
         });
 
         it('should emit correct tag events for simple data', function(done) {
-            var decoder = new ebml.Decoder();
+            const decoder = new ebml.Decoder();
             decoder.on('data', function(data) {
-                var state = data[0];
+                const state = data[0];
                 data = data[1];
                 assert.equal(state, 'tag');
                 assert.equal(data.tag, 0x286);
-                assert.equal(data.tagStr, "4286");
+                assert.equal(data.tagStr, '4286');
                 assert.equal(data.dataSize, 0x01);
                 assert.equal(data.type, 'u');
                 assert.deepEqual(data.data, new Buffer([0x01]));
@@ -81,14 +82,14 @@ describe('embl', function() {
         });
 
         it('should emit correct EBML tag events for master tags', function(done) {
-            var decoder = new ebml.Decoder();
+            const decoder = new ebml.Decoder();
 
             decoder.on('data', function(data) {
-                var state = data[0];
+                const state = data[0];
                 data = data[1];
                 assert.equal(state, 'start');
                 assert.equal(data.tag, 0x0a45dfa3);
-                assert.equal(data.tagStr, "1a45dfa3");
+                assert.equal(data.tagStr, '1a45dfa3');
                 assert.equal(data.dataSize, 0);
                 assert.equal(data.type, 'm');
                 assert.equal(data.data, undefined);
@@ -99,17 +100,17 @@ describe('embl', function() {
         });
 
         it('should emit correct EBML:end events for master tags', function(done) {
-            var decoder = new ebml.Decoder();
-            var tags = 0;
+            const decoder = new ebml.Decoder();
+            let tags = 0;
             decoder.on('data', function(data) {
-                var state = data[0];
+                const state = data[0];
                 data = data[1];
-                if (state != 'end') {
+                if (state !== 'end') {
                     tags++;
                 } else {
                     assert.equal(tags, 2); // two tags
                     assert.equal(data.tag, 0x0a45dfa3);
-                    assert.equal(data.tagStr, "1a45dfa3");
+                    assert.equal(data.tagStr, '1a45dfa3');
                     assert.equal(data.dataSize, 4);
                     assert.equal(data.type, 'm');
                     assert.equal(data.data, undefined);

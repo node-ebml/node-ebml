@@ -1,14 +1,14 @@
-var ebml = require('./index.js');
-var fs = require('fs');
+/* eslint no-console:off */
+const ebml = require('./index.js');
+const fs = require('fs');
 
-var decoder = new ebml.Decoder();
+const decoder = new ebml.Decoder();
 
-decoder.on('data', function(chunk) {
-    console.log(chunk);
-});
+decoder.on('data', chunk => console.log(chunk));
 
-fs.readFile('media/test.webm', function(err, data) {
-    if (err)
+fs.readFile('media/test.webm', (err, data) => {
+    if (err) {
         throw err;
+    }
     decoder.write(data);
 });
