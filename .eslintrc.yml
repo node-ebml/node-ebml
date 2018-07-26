@@ -9,8 +9,92 @@ globals:
 
 parserOptions:
   ecmaVersion: 6
+  ecmaFeatures:
+      scriptType: 'module'
 
 extends: 'eslint:recommended'
 
 rules:
   quotes: ['error', 'single']
+  # Some changes for modernizing it/adding in 'best practices',
+  # as well as code consistency based on existing stylistic choices
+  #
+  # see https://eslint.org/docs/rules/
+  array-bracket-spacing: ['error', 'never']
+  array-callback-return: 'error'
+  array-element-newline: ['error', { multiline: true, minItems: 4 }]
+  arrow-spacing: 'error'
+  block-spacing: 'error'
+  brace-style: ['error', '1tbs', { allowSingleLine: true }]
+  callback-return: 'error'
+  # camelcase: ['error', {ignoreDestructuring: true}] # this is disabled for now because of one variable and Idk if it can be renamed
+  comma-dangle: ['error', 'never']
+  comma-spacing: ['error', { before: false, after: true }]
+  computed-property-spacing: ['error', 'never']
+  consistent-return: 'error'
+  eol-last: 'error'
+  eqeqeq: ['error', 'smart']
+  func-call-spacing: ['error', 'never']
+  func-names: ['error', 'always']
+  func-style: ['error', 'declaration', { allowArrowFunctions: true }]
+  global-require: 'error'
+  indent: ['error', 4]
+  key-spacing: 'error'
+  keyword-spacing: 'error'
+  linebreak-style: ['error', 'unix']
+  lines-between-class-members: ['error', 'always']
+  max-len: ['error', {code: 100, ignoreStrings: true, ignoreUrls: true}] # this, especially, is highly subjective
+  newline-per-chained-call: ['error', { ignoreChainWithDepth: 2 }]
+  no-buffer-constructor: 'error' # https://eslint.org/docs/rules/no-buffer-constructor
+  no-confusing-arrow: 'error'
+  no-duplicate-imports: 'error'
+  no-extra-parens: ['error', 'all', {nestedBinaryExpressions: true, enforceForArrowConditionals: true}]
+  no-extra-semi: 'error'
+  no-implicit-coercion: 'error'
+  no-implicit-globals: 'error'
+  no-lonely-if: 'error'
+  no-mixed-requires: ['error', { grouping: true, allowCall: true }]
+  no-multi-assign: 'error'
+  no-multi-spaces: 'error'
+  no-multiple-empty-lines: ['error', { max: 2, maxEOF: 1, maxBOF: 0}]
+  no-new-require: 'error'
+  no-param-reassign: 'error'
+  no-plusplus: ['error', { allowForLoopAfterthoughts: true }]
+  no-shadow: 'error'
+  no-tabs: 'error'
+  no-this-before-super: 'error'
+  no-trailing-spaces: 'error'
+  no-unneeded-ternary: 'error'
+  no-use-before-define: 'error'
+  no-useless-computed-key: 'error'
+  no-useless-concat: 'error'
+  no-useless-constructor: 'error'
+  no-useless-rename: 'error'
+  no-useless-return: 'error'	
+  no-var: 'error'
+  no-whitespace-before-property: 'error'
+  object-curly-newline: ['error', { multiline: true, minProperties: 4 }]
+  object-curly-spacing: ['error', 'always']
+  one-var-declaration-per-line: ['error', 'always']
+  one-var: ['error', 'never']
+  padding-line-between-statements: ['error', { blankLine: 'always', prev: '*', next: 'return' }]
+  prefer-arrow-callback: 'error'
+  prefer-const: 'error'
+  prefer-destructuring: 'error'
+  prefer-object-spread: 'error'
+  prefer-rest-params: 'error' 
+  prefer-spread: 'error'
+  prefer-template: 'error'
+  quote-props: ['error', 'as-needed', { keywords: true }]
+  semi-spacing: 'error'
+  semi-style: ['error', 'last']
+  semi: ['error', 'always']
+  space-before-blocks: 'error'
+  space-before-function-paren: ['error', {anonymous: 'always', named: 'always', asyncArrow: 'always'}]
+  space-in-parens: ['error', 'never']
+  space-infix-ops: ['error', {int32Hint: true}]
+  space-unary-ops: 'error'
+  spaced-comment: ['error', 'always']
+  switch-colon-spacing: 'error'
+  template-curly-spacing: ['error', 'never']
+  yoda: ['error', 'never', {exceptRange: true}]
