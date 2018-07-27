@@ -1,1 +1,0 @@
-{"env":{"mocha":true}, "rules": { "no-shadow": ["error", { "allow": ["done"] }] }}
