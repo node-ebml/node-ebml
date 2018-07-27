@@ -22,17 +22,18 @@ describe('embl', () => {
                 assert.equal(1, vint.length);
             });
             it('should read the correct value for all 2 byte ints', () => {
-                for (let i = 0; i < 0x40; i++)
-                    for (let j = 0; j < 0xff; j++) {
-                        readVint(Buffer.from([i | 0x40, j]), (i << 8) + j);
-                    }
+                for (let i = 0; i < 0x40; i++) for (let j = 0; j < 0xff; j++) {
+                    readVint(Buffer.from([i | 0x40, j]), (i << 8) + j);
+                }
             });
             it('should read the correct value for all 3 byte ints', () => {
-                for (let i = 0; i < 0x20; i++)
-                    for (let j = 0; j < 0xff; j += 2)
+                for (let i = 0; i < 0x20; i++) {
+                    for (let j = 0; j < 0xff; j += 2) {
                         for (let k = 0; k < 0xff; k += 3) {
                             readVint(Buffer.from([i | 0x20, j, k]), (i << 16) + (j << 8) + k);
                         }
+                    }
+                }
             });
             // not brute forcing any more bytes, takes sooo long
             it('should read the correct value for 4 byte int min/max values', () => {
@@ -238,12 +239,15 @@ describe('embl', () => {
                     0x00,
                     0x00]));
             });
-            // Can't prevent this, 2^53 + 1 === 2^53
-            // it('should throw for more than max representable JS number (2^53 + 1)', function() {
-            //     assert.throws(function() {
-            //         ebml.tools.writeVint(Math.pow(2, 53) + 1));
-            //     }, /Unrepresentable value/)
-            // })
+
+            /*
+             * can't prevent this, 2^53 + 1 === 2^53
+             * it('should throw for more than max representable JS number (2^53 + 1)', function() {
+             *     assert.throws(function() {
+             *         ebml.tools.writeVint(Math.pow(2, 53) + 1));
+             *     }, /Unrepresentable value/)
+             * })
+             */
             it('should throw for more than max representable JS number (8 byte int max value)', () => {
                 assert.throws(() => {
                     ebml.tools.writeVint(Math.pow(2, 56) + 1);

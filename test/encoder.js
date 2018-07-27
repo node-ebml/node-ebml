@@ -34,13 +34,13 @@ describe('embl', () => {
                 0x86,
                 0x81,
                 0x00], done);
-            encoder.write(['start', { name: 'EBML' }]);
+            encoder.write(['start', {name: 'EBML'}]);
             encoder.write(['tag',
                 {
                     name: 'EBMLVersion',
                     data: Buffer.from([0x00])
                 }]);
-            encoder.write(['end', { name: 'EBML' }]);
+            encoder.write(['end', {name: 'EBML'}]);
         });
     });
 });

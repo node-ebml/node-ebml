@@ -99,7 +99,7 @@ describe('embl', () => {
                 assert.equal(data.tagStr, '1a45dfa3');
                 assert.equal(data.dataSize, 0);
                 assert.equal(data.type, 'm');
-                assert.equal(data.data, undefined);
+                assert.equal(data.data, undefined); // eslint-disable-line no-undefined
                 done();
             });
 
@@ -115,16 +115,16 @@ describe('embl', () => {
             let tags = 0;
             decoder.on('data', (d) => {
                 const [state, data] = d;
-                if (state !== 'end') {
-                    tags += 1;
-                } else {
+                if (state === 'end') {
                     assert.equal(tags, 2); // two tags
                     assert.equal(data.tag, 0x0a45dfa3);
                     assert.equal(data.tagStr, '1a45dfa3');
                     assert.equal(data.dataSize, 4);
                     assert.equal(data.type, 'm');
-                    assert.equal(data.data, undefined);
+                    assert.equal(data.data, undefined); // eslint-disable-line no-undefined
                     done();
+                } else {
+                    tags += 1;
                 }
             });
             decoder.write(Buffer.from([0x1a,
