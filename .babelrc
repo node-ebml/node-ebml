@@ -1,0 +1,20 @@
+{
+    "presets": [
+        [
+            "@babel/env",
+            {
+                "targets": {
+                    "browsers": ["last 2 versions", "> 1%"],
+                    "node": "6.4"
+                }
+            }
+        ]
+    ],
+    "plugins": [
+        ["@babel/plugin-proposal-class-properties", { "loose": false }],
+        "@babel/plugin-proposal-export-default-from",
+        "@babel/plugin-proposal-export-namespace-from",
+        "@babel/plugin-proposal-logical-assignment-operators",
+        ["@babel/plugin-proposal-optional-chaining", { "loose": false }]
+    ]
+}

@@ -1,0 +1,5 @@
+# ignore the src and test folders for publishing; work should be done through
+# the github repo
+
+src/
+test/

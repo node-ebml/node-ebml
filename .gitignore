@@ -179,3 +179,6 @@ tags
 
 
 # End of https://www.gitignore.io/api/vim,node,jetbrains+all,visualstudiocode
+
+# babel generated folder now; no need for it to be kept
+lib/

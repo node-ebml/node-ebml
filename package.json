@@ -8,7 +8,10 @@
   },
   "scripts": {
     "test": "mocha test/",
-    "lint": "eslint lib/ test/ index.js"
+    "lint": "eslint lib/ test/ index.js",
+    "lint:fix": "eslint --fix lib/ test/ index.js",
+    "build": "babel --out-dir lib src",
+    "prepublish": "npm run build"
   },
   "repository": {
     "type": "git",
@@ -29,6 +32,13 @@
     "debug": "~3.1.0"
   },
   "devDependencies": {
+    "@babel/core": "^7.0.0-beta.54",
+    "@babel/plugin-proposal-class-properties": "^7.0.0-beta.54",
+    "@babel/plugin-proposal-export-default-from": "^7.0.0-beta.54",
+    "@babel/plugin-proposal-export-namespace-from": "^7.0.0-beta.54",
+    "@babel/plugin-proposal-logical-assignment-operators": "^7.0.0-beta.54",
+    "@babel/plugin-proposal-optional-chaining": "^7.0.0-beta.54",
+    "@babel/preset-env": "^7.0.0-beta.54",
     "eslint": "^5.2.0",
     "mocha": "~5.2.0"
   },
