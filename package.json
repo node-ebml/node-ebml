@@ -6,6 +6,13 @@
   "directories": {
     "test": "test"
   },
+  "files": [
+    "lib/",
+    "index.js",
+    "README.md",
+    "LICENSE",
+    "example.js"
+  ],
   "scripts": {
     "test": "mocha test/",
     "lint": "eslint lib/ index.js"
