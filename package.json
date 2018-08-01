@@ -8,10 +8,11 @@
   },
   "scripts": {
     "test": "mocha test/",
-    "lint": "eslint lib/ test/ index.js",
-    "lint:fix": "eslint --fix lib/ test/ index.js",
+    "lint": "eslint src test index.js",
+    "lint:fix": "eslint --fix src test index.js",
     "build": "babel --out-dir lib src",
-    "prepublish": "npm run build"
+    "prepublish": "check-node-version --npm \">=4\" || npm run prepare",
+    "prepare": "npm run build"
   },
   "repository": {
     "type": "git",
@@ -39,8 +40,18 @@
     "@babel/plugin-proposal-logical-assignment-operators": "^7.0.0-beta.54",
     "@babel/plugin-proposal-optional-chaining": "^7.0.0-beta.54",
     "@babel/preset-env": "^7.0.0-beta.54",
+    "@babel/register": "^7.0.0-beta.54",
+    "babel-eslint": "^8.2.6",
+    "check-node-version": "^3.2.0",
     "eslint": "^5.2.0",
-    "mocha": "~5.2.0"
+    "eslint-config-airbnb-base": "^13.0.0",
+    "eslint-config-prettier": "^2.9.0",
+    "eslint-plugin-import": "^2.13.0",
+    "eslint-plugin-node": "^7.0.1",
+    "eslint-plugin-prettier": "^2.6.2",
+    "mocha": "~5.2.0",
+    "prettier": "^1.13.7",
+    "prettier-eslint": "^8.8.2"
   },
   "contributors": [
     "Chris Price <price.c@gmail.com>",

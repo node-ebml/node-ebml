@@ -1,105 +1,127 @@
-const {Transform} = require('stream');
-const tools = require('./tools.js');
-const schema = require('./schema.js');
+const { Transform } = require('stream');
 const debug = require('debug')('ebml:encoder');
 const Buffers = require('buffers');
+const schema = require('./schema.js');
+const tools = require('./tools.js');
 
-module.exports = class EbmlEncoder extends Transform {
-    constructor (options = {}) {
-        options.writableObjectMode = true;
-        super(options);
+export function encodeTag(tagId, tagData, end) {
+    return Buffers([
+        tagId,
+        end === -1
+            ? Buffer.from('01ffffffffffffff', 'hex')
+            : tools.writeVint(tagData.length),
+        tagData
+    ]);
+}
+export default class EbmlEncoder extends Transform {
+    /**
+     * @private
+     * @property
+     * @type {EbmlSchema}
+     */
+    mSchema = schema;
 
-        this._schema = schema;
-        this._buffer = null;
-        this._corked = false;
+    /**
+     * @type {Uint8Array}
+     * @property
+     * @private
+     */
+    mU8Buffer = null;
 
-        this._stack = [];
+    /**
+     * @private
+     * @property
+     * @type {Boolean}
+     */
+    mCorked = false;
+
+    mStack = [];
+
+    constructor(options = {}) {
+        super({ ...options, writableObjectMode: true });
     }
 
-    _transform (chunk, enc, done) {
+    _transform(chunk, enc, done) {
         debug(`encode ${chunk[0]} ${chunk[1].name}`);
 
         switch (chunk[0]) {
-        case 'start':
-            this.startTag(chunk[1].name, chunk[1]);
-            break;
-        case 'tag':
-            this.writeTag(chunk[1].name, chunk[1].data);
-            break;
-        case 'end':
-            this.endTag(chunk[1].name);
-            break;
+            case 'start':
+                this.startTag(chunk[1].name, chunk[1]);
+                break;
+            case 'tag':
+                this.writeTag(chunk[1].name, chunk[1].data);
+                break;
+            case 'end':
+                this.endTag(chunk[1].name);
+                break;
+            default:
+                break;
         }
 
         done();
     }
 
-    _flush (done = () => {}) {
-
-        if (!this._buffer || this._corked) {
+    _flush(done = () => {}) {
+        if (!this.mU8Buffer || this.mCorked) {
             debug('no buffer/nothing pending');
             done();
 
             return;
         }
 
-        debug(`writing ${this._buffer.length} bytes`);
+        debug(`writing ${this.mU8Buffer.length} bytes`);
 
-        const chunk = this._buffer.toBuffer();
-        this._buffer = null;
+        const chunk = this.mU8Buffer.toBuffer();
+        this.mU8Buffer = null;
         this.push(chunk);
         done();
     }
 
-    _bufferAndFlush (buffer) {
-        if (this._buffer) {
-            this._buffer.push(buffer);
+    _bufferAndFlush(buffer) {
+        if (this.mU8Buffer) {
+            this.mU8Buffer.push(buffer);
         } else {
-            this._buffer = Buffers([buffer]);
+            this.mU8Buffer = Buffers([buffer]);
         }
         this._flush();
     }
 
-    getSchemaInfo (tagName) {
-        const tagStrs = Object.keys(this._schema)
-            .find(tagStr => this._schema[tagStr].name === tagName);
-        if (tagStrs) {
-            return Buffer.from(tagStrs, 'hex');
+    getSchemaInfo(tagName) {
+        const tagStr = Object.keys(this.mSchema).find(
+            str => this.mSchema[str].name === tagName
+        );
+        if (tagStr) {
+            return Buffer.from(tagStr, 'hex');
         }
 
         return null;
     }
 
-    cork () {
-        this._corked = true;
+    cork() {
+        this.mCorked = true;
     }
 
-    uncork () {
-        this._corked = false;
+    uncork() {
+        this.mCorked = false;
         this._flush();
     }
 
-    /* eslint-disable class-methods-use-this */
-    _encodeTag (tagId, tagData, end) {
-        return Buffers([tagId, end === -1 ? Buffer.from('01ffffffffffffff', 'hex') : tools.writeVint(tagData.length), tagData]);
-    }
-    /* eslint-enable class-methods-use-this */
-
-    writeTag (tagName, tagData) {
+    writeTag(tagName, tagData) {
         const tagId = this.getSchemaInfo(tagName);
         if (!tagId) {
             throw new Error(`No schema entry found for ${tagName}`);
         }
-
-        const data = this._encodeTag(tagId, tagData);
-        if (this._stack.length > 0) {
-            this._stack[this._stack.length - 1].children.push({data: data});
-        } else {
-            this._bufferAndFlush(data.toBuffer());
+        if (tagData) {
+            const data = encodeTag(tagId, tagData);
+            if (this.mStack.length > 0) {
+                this.mStack[this.mStack.length - 1].children.push({ data });
+            } else {
+                this._bufferAndFlush(data.toBuffer());
+            }
         }
     }
 
-    startTag (tagName, info) {
+    startTag(tagName, info) {
         const tagId = this.getSchemaInfo(tagName);
         if (!tagId) {
             throw new Error(`No schema entry found for ${tagName}`);
@@ -112,20 +134,20 @@ module.exports = class EbmlEncoder extends Transform {
             children: []
         };
 
-        if (this._stack.length > 0) {
-            this._stack[this._stack.length - 1].children.push(tag);
+        if (this.mStack.length > 0) {
+            this.mStack[this.mStack.length - 1].children.push(tag);
         }
-        this._stack.push(tag);
+        this.mStack.push(tag);
     }
 
-    endTag () {
-        const tag = this._stack.pop();
+    endTag() {
+        const tag = this.mStack.pop();
 
         const childTagDataBuffers = tag.children.map(child => child.data);
-        tag.data = this._encodeTag(tag.id, Buffers(childTagDataBuffers), tag.end);
+        tag.data = encodeTag(tag.id, Buffers(childTagDataBuffers), tag.end);
 
-        if (this._stack.length < 1) {
+        if (this.mStack.length < 1) {
             this._bufferAndFlush(tag.data.toBuffer());
         }
     }
-};
+}

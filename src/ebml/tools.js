@@ -1,16 +1,14 @@
 module.exports = class Tools {
-
     /**
      * read variable length integer per https://www.matroska.org/technical/specs/index.html#EBML_ex
      * @param {Uint8Array} buffer containing input
      * @param {Number} [start=0] position in buffer
      * @returns {*}  value / length object
      */
-    static readVint (buffer, start = 0) {
-
-        let length = 1;
-        for (length = 1; length <= 8; length++) {
-            if (buffer[start] >= Math.pow(2, 8 - length)) {
+    static readVint(buffer, start = 0) {
+        let length;
+        for (length = 1; length <= 8; length += 1) {
+            if (buffer[start] >= 2 ** (8 - length)) {
                 break;
             }
         }
@@ -24,23 +22,23 @@ module.exports = class Tools {
             return null;
         }
 
-        let value = buffer[start] & (1 << 8 - length) - 1;
-        for (let i = 1; i < length; i++) {
+        let value = buffer[start] & ((1 << (8 - length)) - 1);
+        for (let i = 1; i < length; i += 1) {
             if (i === 7) {
-                if (value >= Math.pow(2, 53 - 8) && buffer[start + 7] > 0) {
+                if (value >= 2 ** 8 && buffer[start + 7] > 0) {
                     return {
-                        length: length,
+                        length,
                         value: -1
                     };
                 }
             }
-            value *= Math.pow(2, 8);
+            value *= 2 ** 8;
             value += buffer[start + i];
         }
 
         return {
-            length: length,
-            value: value
+            length,
+            value
         };
     }
 
@@ -49,27 +47,27 @@ module.exports = class Tools {
      * @param {Number} value to store into buffer
      * @returns {Buffer} containing the value
      */
-    static writeVint (value) {
-        if (value < 0 || value > Math.pow(2, 53)) {
+    static writeVint(value) {
+        if (value < 0 || value > 2 ** 3) {
             throw new Error(`Unrepresentable value: ${value}`);
         }
 
         let length = 1;
-        for (length = 1; length <= 8; length++) {
-            if (value < Math.pow(2, 7 * length) - 1) {
+        for (length = 1; length <= 8; length += 1) {
+            if (value < 2 ** (7 * length) - 1) {
                 break;
             }
         }
 
         const buffer = Buffer.alloc(length);
         let val = value;
-        for (let i = 1; i <= length; i++) {
-            const b = val & 0xFF;
+        for (let i = 1; i <= length; i += 1) {
+            const b = val & 0xff;
             buffer[length - i] = b;
             val -= b;
-            val /= Math.pow(2, 8);
+            val /= 2 ** 8;
         }
-        buffer[0] = buffer[0] | (1 << (8 - length));
+        buffer[0] |= 1 << (8 - length);
 
         return buffer;
     }
@@ -81,7 +79,7 @@ module.exports = class Tools {
      * @param {Uint8Array} a2  Second array
      * @returns  {Uint8Array} concatenated arrays
      */
-    static concatenate (a1, a2) {
+    static concatenate(a1, a2) {
         if (!a1 || a1.byteLength === 0) {
             return a2;
         }
@@ -91,11 +89,6 @@ module.exports = class Tools {
         const result = new Uint8Array(a1.byteLength + a2.byteLength);
         result.set(a1, 0);
         result.set(a2, a1.byteLength);
-        // xxx: Why are these nulled out?
-        /* eslint-disable no-param-reassign */
-        a1 = null;
-        a2 = null;
-        /* eslint-enable no-param-reassign */
 
         return result;
     }
@@ -107,9 +100,9 @@ module.exports = class Tools {
      * @param {Number} [end=buff.byteLength], default the whole buffer
      * @returns {string} the hex string
      */
-    static readHexString (buff, start = 0, end = buff.byteLength) {
+    static readHexString(buff, start = 0, end = buff.byteLength) {
         let result = '';
-        for (let p = start; p < end; p++) {
+        for (let p = start; p < end; p += 1) {
             const q = Number(buff[p] & 0xff);
             result += `00${q.toString(16)}`.substr(-2);
         }
@@ -117,12 +110,11 @@ module.exports = class Tools {
         return result;
     }
 
-    static readUtf8 (buff) {
+    static readUtf8(buff) {
         if (typeof window === 'undefined') {
             return Buffer.from(buff).toString('utf8');
         }
         try {
-
             /* redmond Middle School science projects don't do this. */
             if (typeof TextDecoder !== 'undefined') {
                 return new TextDecoder('utf8').decode(buff);
@@ -139,91 +131,96 @@ module.exports = class Tools {
      * @param {Uint8Array} buff from which to read variable-length unsigned number
      * @returns {number} result (in hex for lengths > 6)
      */
-    static readUnsigned (buff) {
+    static readUnsigned(buff) {
         const b = new DataView(buff.buffer, buff.byteOffset, buff.byteLength);
         switch (buff.byteLength) {
-        case 1:
-            return b.getUint8(0);
-        case 2:
-            return b.getUint16(0);
-        case 4:
-            return b.getUint32(0);
-        default:
-            break;
+            case 1:
+                return b.getUint8(0);
+            case 2:
+                return b.getUint16(0);
+            case 4:
+                return b.getUint32(0);
+            default:
+                break;
         }
         if (buff.byteLength <= 6) {
-            return buff.reduce((acc, current) => (acc * 256) + current, 0);
+            return buff.reduce((acc, current) => acc * 256 + current, 0);
         }
 
         return Tools.readHexString(buff, 0, buff.byteLength);
-
     }
 
-    static readSigned (buff) {
+    static readSigned(buff) {
         const b = new DataView(buff.buffer, buff.byteOffset, buff.byteLength);
         switch (buff.byteLength) {
-        case 1:
-            return b.getInt8(0);
-        case 2:
-            return b.getInt16(0);
-        case 4:
-            return b.getInt32(0);
-        default:
-            return NaN;
+            case 1:
+                return b.getInt8(0);
+            case 2:
+                return b.getInt16(0);
+            case 4:
+                return b.getInt32(0);
+            default:
+                return NaN;
         }
-
     }
 
-    static readFloat (buff) {
+    static readFloat(buff) {
         const b = new DataView(buff.buffer, buff.byteOffset, buff.byteLength);
         switch (buff.byteLength) {
-        case 4:
-            return b.getFloat32(0);
-        case 8:
-            return b.getFloat64(0);
-        default:
-            return NaN;
+            case 4:
+                return b.getFloat32(0);
+            case 8:
+                return b.getFloat64(0);
+            default:
+                return NaN;
         }
     }
 
-    static readDataFromTag (tagObj, data) {
-
-        tagObj.data = data;
-        switch (tagObj.type) {
-        case 'u':
-            tagObj.value = Tools.readUnsigned(data);
-            break;
-        case 'f':
-            tagObj.value = Tools.readFloat(data);
-            break;
-        case 'i':
-            tagObj.value = Tools.readSigned(data);
-            break;
-        case 's':
-            tagObj.value = String.fromCharCode.apply(null, data);
-            break;
-        case '8':
-            tagObj.value = Tools.readUtf8(data);
-            break;
-        default:
-            break;
+    /**
+     * Reads the data from a tag
+     * @static
+     * @param  {object} tagObj The tag object to be read
+     * @param  {*} data Data to be transformed
+     * @return {*}
+     */
+    static readDataFromTag(tagObj, data) {
+        const { type, name } = tagObj;
+        let { value, payload, discardable, track, keyframe } = tagObj;
+        switch (type) {
+            case 'u':
+                value = Tools.readUnsigned(data);
+                break;
+            case 'f':
+                value = Tools.readFloat(data);
+                break;
+            case 'i':
+                value = Tools.readSigned(data);
+                break;
+            case 's':
+                value = String.fromCharCode(...data);
+                break;
+            case '8':
+                value = Tools.readUtf8(data);
+                break;
+            default:
+                break;
         }
 
-        if (tagObj.name === 'SimpleBlock' || tagObj.name === 'Block') {
+        if (name === 'SimpleBlock' || name === 'Block') {
             let p = 0;
-            const track = Tools.readVint(data, p);
-            p += track.length;
-            tagObj.track = track.value;
-            tagObj.value = Tools.readSigned(data.subarray(p, p + 2));
+            const trk = Tools.readVint(data, p);
+            p += trk.length;
+            track = trk.value;
+            value = Tools.readSigned(data.subarray(p, p + 2));
             p += 2;
-            if (tagObj.name === 'SimpleBlock') {
-                tagObj.keyframe = Boolean(data[track.length + 2] & 0x80);
-                tagObj.discardable = Boolean(data[track.length + 2] & 0x01);
+            if (name === 'SimpleBlock') {
+                keyframe = Boolean(data[trk.length + 2] & 0x80);
+                discardable = Boolean(data[trk.length + 2] & 0x01);
             }
             p += 1;
-            tagObj.payload = data.subarray(p);
+            payload = data.subarray(p);
         }
 
-        return tagObj;
+        return { ...tagObj, value, payload, discardable, track, keyframe };
     }
 };

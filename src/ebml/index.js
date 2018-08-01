@@ -1,8 +1,4 @@
-/* eslint-disable global-require */
-
-module.exports = {
-    tools: require('./tools.js'),
-    schema: require('./schema.js'),
-    Decoder: require('./decoder.js'),
-    Encoder: require('./encoder.js')
-};
+export tools from './tools';
+export schema from './schema';
+export Decoder from './decoder';
+export Encoder from './encoder';
