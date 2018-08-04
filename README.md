@@ -112,6 +112,7 @@ MIT
 * [Chris Price](https://github.com/chrisprice)
 * [Davy Van Deursen](https://github.com/dvdeurse)
 * [Ed Markowski](https://github.com/siphontv)
+* [Jonathan Sifuentes](https://github.com/jayands)
 * [Manuel Wiedenmann](https://github.com/fsmanuel)
 * [Mark Schmale](https://github.com/themasch)
 * [Mathias Buus](https://github.com/mafintosh)

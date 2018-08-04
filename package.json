@@ -14,6 +14,9 @@
     "type": "git",
     "url": "git://github.com/themasch/node-ebml.git"
   },
+  "engines": {
+    "node": ">= 6.4"
+  },
   "keywords": [
     "ebml",
     "webm",
@@ -26,7 +29,7 @@
     "debug": "~3.1.0"
   },
   "devDependencies": {
-    "eslint": "^5.0.1",
+    "eslint": "^5.2.0",
     "mocha": "~5.2.0"
   },
   "contributors": [
@@ -36,7 +39,8 @@
     "Manuel Wiedenmann <manuel@funkensturm.de>",
     "Mathias Buus <mathiasbuus@gmail.com>",
     "Max Ogden <max@maxogden.com>",
-    "Oliver Walzer <walzer@incuray.com>"
+    "Oliver Walzer <walzer@incuray.com>",
+    "Jonathan Sifuentes <jayands.dev@gmail.com>"
   ],
   "license": "MIT",
   "bugs": {
