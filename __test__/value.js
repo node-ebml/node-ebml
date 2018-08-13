@@ -1,9 +1,6 @@
-/* eslint-disable no-sync */
-/* globals describe, it */
-
-const fs = require('fs');
-const assert = require('assert');
-const ebml = require('../src/ebml/index.js');
+import fs from 'fs';
+import assert from 'assert';
+import { Decoder } from '../src/ebml';
 
 process.setMaxListeners(Infinity);
 
@@ -12,7 +9,7 @@ describe('embl', () => {
         let data = fs.readFileSync('media/video-webm-codecs-avc1-42E01E.webm');
 
         it('should get a correct PixelWidth value from a video/webm; codecs="avc1.42E01E" file (2-byte unsigned int)', done => {
-            const decoder = new ebml.Decoder();
+            const decoder = new Decoder();
             decoder.on('data', chunk => {
                 if (chunk[0] === 'tag' && chunk[1].name === 'PixelWidth') {
                     assert.strictEqual(chunk[1].value, 352);
@@ -31,7 +28,7 @@ describe('embl', () => {
         });
 
         it('should get a correct EBMLVersion value from a video/webm; codecs="avc1.42E01E" file (one-byte unsigned int)', done => {
-            const decoder = new ebml.Decoder();
+            const decoder = new Decoder();
             decoder.on('data', chunk => {
                 if (chunk[0] === 'tag' && chunk[1].name === 'EBMLVersion') {
                     assert.strictEqual(chunk[1].value, 1);
@@ -50,7 +47,7 @@ describe('embl', () => {
         });
 
         it('should get a correct TimeCodeScale value from a video/webm; codecs="avc1.42E01E" file (3-byte unsigned int)', done => {
-            const decoder = new ebml.Decoder();
+            const decoder = new Decoder();
             decoder.on('data', chunk => {
                 if (chunk[0] === 'tag' && chunk[1].name === 'TimecodeScale') {
                     assert.strictEqual(chunk[1].value, 1000000);
@@ -69,7 +66,7 @@ describe('embl', () => {
         });
 
         it('should get a correct TrackUID value from a video/webm; codecs="avc1.42E01E" file (56-bit integer in hex)', done => {
-            const decoder = new ebml.Decoder();
+            const decoder = new Decoder();
             decoder.on('data', chunk => {
                 if (chunk[0] === 'tag' && chunk[1].name === 'TrackUID') {
                     assert.strictEqual(chunk[1].value, '306d02aaa74d06');
@@ -88,7 +85,7 @@ describe('embl', () => {
         });
 
         it('should get a correct DocType value from a video/webm; codecs="avc1.42E01E" file (ASCII text)', done => {
-            const decoder = new ebml.Decoder();
+            const decoder = new Decoder();
             decoder.on('data', chunk => {
                 if (chunk[0] === 'tag' && chunk[1].name === 'DocType') {
                     assert.strictEqual(chunk[1].value, 'webm');
@@ -107,7 +104,7 @@ describe('embl', () => {
         });
 
         it('should get a correct MuxingApp value from a video/webm; codecs="avc1.42E01E" file (utf8 text)', done => {
-            const decoder = new ebml.Decoder();
+            const decoder = new Decoder();
             decoder.on('data', chunk => {
                 if (chunk[0] === 'tag' && chunk[1].name === 'MuxingApp') {
                     assert.strictEqual(chunk[1].value, 'Chrome');
@@ -126,7 +123,7 @@ describe('embl', () => {
         });
 
         it('should get a correct SimpleBlock time payload from a video/webm; codecs="avc1.42E01E" file (binary)', done => {
-            const decoder = new ebml.Decoder();
+            const decoder = new Decoder();
             decoder.on('data', chunk => {
                 if (chunk[0] === 'tag' && chunk[1].name === 'SimpleBlock') {
                     if (chunk[1].value > 0) {
@@ -161,7 +158,7 @@ describe('embl', () => {
         data = fs.readFileSync('media/video-webm-codecs-vp8.webm');
 
         it('should get a correct PixelWidth value from a video/webm; codecs="vp8" file (2-byte unsigned int)', done => {
-            const decoder = new ebml.Decoder();
+            const decoder = new Decoder();
             decoder.on('data', chunk => {
                 if (chunk[0] === 'tag' && chunk[1].name === 'PixelWidth') {
                     assert.strictEqual(chunk[1].value, 352);
@@ -180,7 +177,7 @@ describe('embl', () => {
         });
 
         it('should get a correct EBMLVersion value from a video/webm; codecs="vp8" file (one-byte unsigned int)', done => {
-            const decoder = new ebml.Decoder();
+            const decoder = new Decoder();
             decoder.on('data', chunk => {
                 if (chunk[0] === 'tag' && chunk[1].name === 'EBMLVersion') {
                     assert.strictEqual(chunk[1].value, 1);
@@ -199,7 +196,7 @@ describe('embl', () => {
         });
 
         it('should get a correct TimeCodeScale value from a video/webm; codecs="vp8" file (3-byte unsigned int)', done => {
-            const decoder = new ebml.Decoder();
+            const decoder = new Decoder();
             decoder.on('data', chunk => {
                 if (chunk[0] === 'tag' && chunk[1].name === 'TimecodeScale') {
                     assert.strictEqual(chunk[1].value, 1000000);
@@ -218,7 +215,7 @@ describe('embl', () => {
         });
 
         it('should get a correct TrackUID value from a video/webm; codecs="vp8" file (56-bit integer in hex)', done => {
-            const decoder = new ebml.Decoder();
+            const decoder = new Decoder();
             decoder.on('data', chunk => {
                 if (chunk[0] === 'tag' && chunk[1].name === 'TrackUID') {
                     assert.strictEqual(chunk[1].value, '306d02aaa74d06');
@@ -237,7 +234,7 @@ describe('embl', () => {
         });
 
         it('should get a correct DocType value from a video/webm; codecs="vp8" file (ASCII text)', done => {
-            const decoder = new ebml.Decoder();
+            const decoder = new Decoder();
             decoder.on('data', chunk => {
                 if (chunk[0] === 'tag' && chunk[1].name === 'DocType') {
                     assert.strictEqual(chunk[1].value, 'webm');
@@ -256,7 +253,7 @@ describe('embl', () => {
         });
 
         it('should get a correct MuxingApp value from a video/webm; codecs="vp8" file (utf8 text)', done => {
-            const decoder = new ebml.Decoder();
+            const decoder = new Decoder();
             decoder.on('data', chunk => {
                 if (chunk[0] === 'tag' && chunk[1].name === 'MuxingApp') {
                     assert.strictEqual(chunk[1].value, 'Chrome');
@@ -275,7 +272,7 @@ describe('embl', () => {
         });
 
         it('should get a correct SimpleBlock time payload rom a video/webm; codecs="vp8" file (binary)', done => {
-            const decoder = new ebml.Decoder();
+            const decoder = new Decoder();
             decoder.on('data', chunk => {
                 if (chunk[0] === 'tag' && chunk[1].name === 'SimpleBlock') {
                     if (chunk[1].value > 0) {

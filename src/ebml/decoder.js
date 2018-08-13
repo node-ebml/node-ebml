@@ -1,7 +1,8 @@
-const { Transform } = require('stream');
+import { Transform } from 'stream';
+import tools from './tools';
+import schema from './schema';
+
 const debug = require('debug')('ebml:decoder');
-const tools = require('./tools.js');
-const schema = require('./schema.js');
 
 const STATE_TAG = 1;
 const STATE_SIZE = 2;
@@ -11,13 +12,14 @@ export default class EbmlDecoder extends Transform {
     /**
      * @property
      * @private
-     * @type {Uint8Array}
+     * @type {Buffer}
      */
-    mU8Buffer = null;
+    mBuffer = null;
 
     /**
      * @private
      * @property
+     * @readonly
      */
     mTagStack = [];
 
@@ -51,7 +53,7 @@ export default class EbmlDecoder extends Transform {
     }
 
     get buffer() {
-        return this.mU8Buffer;
+        return this.mBuffer;
     }
 
     get cursor() {
@@ -62,24 +64,50 @@ export default class EbmlDecoder extends Transform {
         return this.mState;
     }
 
+    get tagStack() {
+        return this.mTagStack;
+    }
+
+    get total() {
+        return this.mTotal;
+    }
+
+    set buffer(buffer) {
+        if (this.mBuffer !== buffer) {
+            this.mBuffer = buffer;
+        }
+    }
+
+    set cursor(cursor) {
+        // cheap copy -- no check needed
+        this.mCursor = cursor;
+    }
+
+    set state(state) {
+        if (this.mState !== state) {
+            this.mState = state;
+        }
+    }
+
+    set total(total) {
+        this.mTotal = total;
+    }
+
     _transform(chunk, enc, done) {
-        if (!this.mU8Buffer) {
-            this.mU8Buffer = new Uint8Array(chunk);
+        if (!this.buffer) {
+            this.buffer = Buffer.from(chunk);
         } else {
-            this.mU8Buffer = tools.concatenate(
-                this.mU8Buffer,
-                new Uint8Array(chunk)
-            );
+            this.buffer = tools.concatenate(this.buffer, Buffer.from(chunk));
         }
 
-        while (this.mCursor < this.mU8Buffer.length) {
-            if (this.mState === STATE_TAG && !this.readTag()) {
+        while (this.cursor < this.buffer.length) {
+            if (this.state === STATE_TAG && !this.readTag()) {
                 break;
             }
-            if (this.mState === STATE_SIZE && !this.readSize()) {
+            if (this.state === STATE_SIZE && !this.readSize()) {
                 break;
             }
-            if (this.mState === STATE_CONTENT && !this.readContent()) {
+            if (this.state === STATE_CONTENT && !this.readContent()) {
                 break;
             }
         }
@@ -99,30 +127,30 @@ export default class EbmlDecoder extends Transform {
     readTag() {
         debug('parsing tag');
 
-        if (this.mCursor >= this.mU8Buffer.length) {
+        if (this.cursor >= this.buffer.length) {
             debug('waiting for more data');
 
             return false;
         }
 
-        const start = this.mTotal;
-        const tag = tools.readVint(this.mU8Buffer, this.mCursor);
+        const start = this.total;
+        const tag = tools.readVint(this.buffer, this.cursor);
 
-        if (tag === null) {
+        if (tag == null) {
             debug('waiting for more data');
 
             return false;
         }
 
         const tagStr = tools.readHexString(
-            this.mU8Buffer,
-            this.mCursor,
-            this.mCursor + tag.length
+            this.buffer,
+            this.cursor,
+            this.cursor + tag.length
         );
 
-        this.mCursor += tag.length;
-        this.mTotal += tag.length;
-        this.mState = STATE_SIZE;
+        this.cursor += tag.length;
+        this.total += tag.length;
+        this.state = STATE_SIZE;
 
         const tagObj = {
             tag: tag.value,
@@ -133,24 +161,24 @@ export default class EbmlDecoder extends Transform {
             end: start + tag.length
         };
 
-        this.mTagStack.push(tagObj);
+        this.tagStack.push(tagObj);
         debug(`read tag: ${tagStr}`);
 
         return true;
     }
 
     readSize() {
-        const tagObj = this.mTagStack[this.mTagStack.length - 1];
+        const tagObj = this.tagStack[this.tagStack.length - 1];
 
         debug(`parsing size for tag: ${tagObj.tagStr}`);
 
-        if (this.mCursor >= this.mU8Buffer.length) {
+        if (this.cursor >= this.buffer.length) {
             debug('waiting for more data');
 
             return false;
         }
 
-        const size = tools.readVint(this.mU8Buffer, this.mCursor);
+        const size = tools.readVint(this.buffer, this.cursor);
 
         if (size == null) {
             debug('waiting for more data');
@@ -158,9 +186,9 @@ export default class EbmlDecoder extends Transform {
             return false;
         }
 
-        this.mCursor += size.length;
-        this.mTotal += size.length;
-        this.mState = STATE_CONTENT;
+        this.cursor += size.length;
+        this.total += size.length;
+        this.state = STATE_CONTENT;
         tagObj.dataSize = size.value;
 
         // unknown size
@@ -176,48 +204,46 @@ export default class EbmlDecoder extends Transform {
     }
 
     readContent() {
-        const tagObj = this.mTagStack[this.mTagStack.length - 1];
+        const tagObj = this.tagStack[this.tagStack.length - 1];
 
         debug(`parsing content for tag: ${tagObj.tagStr}`);
 
         if (tagObj.type === 'm') {
             debug('content should be tags');
             this.push(['start', tagObj]);
-            this.mState = STATE_TAG;
+            this.state = STATE_TAG;
 
             return true;
         }
 
-        if (this.mU8Buffer.length < this.mCursor + tagObj.dataSize) {
-            debug(`got: ${this.mU8Buffer.length}`);
-            debug(`need: ${this.mCursor + tagObj.dataSize}`);
+        if (this.buffer.length < this.cursor + tagObj.dataSize) {
+            debug(`got: ${this.buffer.length}`);
+            debug(`need: ${this.cursor + tagObj.dataSize}`);
             debug('waiting for more data');
 
             return false;
         }
 
-        const data = this.mU8Buffer.subarray(
-            this.mCursor,
-            this.mCursor + tagObj.dataSize
+        const data = this.buffer.subarray(
+            this.cursor,
+            this.cursor + tagObj.dataSize
         );
-        this.mTotal += tagObj.dataSize;
-        this.mState = STATE_TAG;
-        this.mU8Buffer = this.mU8Buffer.subarray(
-            this.mCursor + tagObj.dataSize
-        );
-        this.mCursor = 0;
+        this.total += tagObj.dataSize;
+        this.state = STATE_TAG;
+        this.buffer = this.buffer.subarray(this.cursor + tagObj.dataSize);
+        this.cursor = 0;
 
-        this.mTagStack.pop(); // remove the object from the stack
+        this.tagStack.pop(); // remove the object from the stack
 
         this.push(['tag', tools.readDataFromTag(tagObj, Buffer.from(data))]);
 
-        while (this.mTagStack.length > 0) {
-            const topEle = this.mTagStack[this.mTagStack.length - 1];
-            if (this.mTotal < topEle.end) {
+        while (this.tagStack.length > 0) {
+            const topEle = this.tagStack[this.tagStack.length - 1];
+            if (this.total < topEle.end) {
                 break;
             }
             this.push(['end', topEle]);
-            this.mTagStack.pop();
+            this.tagStack.pop();
         }
 
         debug(`read data: ${data.toString('hex')}`);

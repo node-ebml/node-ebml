@@ -1,16 +1,14 @@
-const assert = require('assert');
-const ebml = require('../src/ebml/index.js');
+import assert from 'assert';
+import Decoder from './decoder';
 
 const STATE_TAG = 1;
-
 const STATE_SIZE = 2;
-
 const STATE_CONTENT = 3;
 
 describe('embl', () => {
     describe('Decoder', () => {
         it('should wait for more data if a tag is longer than the buffer', () => {
-            const decoder = new ebml.Decoder();
+            const decoder = new Decoder();
             decoder.write(Buffer.from([0x1a, 0x45]));
 
             assert.strictEqual(STATE_TAG, decoder.state);
@@ -19,7 +17,7 @@ describe('embl', () => {
         });
 
         it('should clear the buffer after a full tag is written in one chunk', () => {
-            const decoder = new ebml.Decoder();
+            const decoder = new Decoder();
             decoder.write(Buffer.from([0x42, 0x86, 0x81, 0x01]));
 
             assert.strictEqual(STATE_TAG, decoder.state);
@@ -28,7 +26,7 @@ describe('embl', () => {
         });
 
         it('should clear the buffer after a full tag is written in multiple chunks', () => {
-            const decoder = new ebml.Decoder();
+            const decoder = new Decoder();
 
             decoder.write(Buffer.from([0x42, 0x86]));
             decoder.write(Buffer.from([0x81, 0x01]));
@@ -39,7 +37,7 @@ describe('embl', () => {
         });
 
         it('should increment the cursor on each step', () => {
-            const decoder = new ebml.Decoder();
+            const decoder = new Decoder();
 
             decoder.write(Buffer.from([0x42])); // 4
 
@@ -67,39 +65,43 @@ describe('embl', () => {
         });
 
         it('should emit correct tag events for simple data', done => {
-            const decoder = new ebml.Decoder();
-            decoder.on('data', d => {
-                const [state, data] = d;
-                assert.strictEqual(state, 'tag');
-                assert.strictEqual(data.tag, 0x286);
-                assert.strictEqual(data.tagStr, '4286');
-                assert.strictEqual(data.dataSize, 0x01);
-                assert.strictEqual(data.type, 'u');
-                assert.deepStrictEqual(data.data, Buffer.from([0x01]));
-                done();
-            });
+            const decoder = new Decoder();
+            decoder.on(
+                'data',
+                ([state, { dataSize, tag, type, tagStr, data }]) => {
+                    assert.strictEqual(state, 'tag');
+                    assert.strictEqual(tag, 0x286);
+                    assert.strictEqual(tagStr, '4286');
+                    assert.strictEqual(dataSize, 0x01);
+                    assert.strictEqual(type, 'u');
+                    assert.deepStrictEqual(data, Buffer.from([0x01]));
+                    done();
+                }
+            );
             decoder.write(Buffer.from([0x42, 0x86, 0x81, 0x01]));
         });
 
         it('should emit correct EBML tag events for master tags', done => {
-            const decoder = new ebml.Decoder();
+            const decoder = new Decoder();
 
-            decoder.on('data', d => {
-                const [state, data] = d;
-                assert.strictEqual(state, 'start');
-                assert.strictEqual(data.tag, 0x0a45dfa3);
-                assert.strictEqual(data.tagStr, '1a45dfa3');
-                assert.strictEqual(data.dataSize, 0);
-                assert.strictEqual(data.type, 'm');
-                assert.strictEqual(data.data, undefined); // eslint-disable-line no-undefined
-                done();
-            });
+            decoder.on(
+                'data',
+                ([state, { dataSize, tag, type, tagStr, data }]) => {
+                    assert.strictEqual(state, 'start');
+                    assert.strictEqual(tag, 0x0a45dfa3);
+                    assert.strictEqual(tagStr, '1a45dfa3');
+                    assert.strictEqual(dataSize, 0);
+                    assert.strictEqual(type, 'm');
+                    assert.strictEqual(data, undefined); // eslint-disable-line no-undefined
+                    done();
+                }
+            );
 
             decoder.write(Buffer.from([0x1a, 0x45, 0xdf, 0xa3, 0x80]));
         });
 
         it('should emit correct EBML:end events for master tags', done => {
-            const decoder = new ebml.Decoder();
+            const decoder = new Decoder();
             let tags = 0;
             decoder.on('data', d => {
                 const [state, data] = d;

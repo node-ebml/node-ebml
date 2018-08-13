@@ -1,4 +1,8 @@
 {
+    "env":{
+        "development": {"ignore": ["**/*.test.js"]},
+        "production": {"ignore": ["**/*.test.js"]}
+    },
     "presets": [
         [
             "@babel/env",

@@ -2,6 +2,7 @@
   env:
     browser: true
     node: true
+    jest: true
   globals:
     Uint8Array: true
     DataView: true

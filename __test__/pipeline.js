@@ -1,5 +1,5 @@
-const assert = require('assert');
-const { Decoder, Encoder } = require('../src/ebml/index.js');
+import assert from 'assert';
+import { Decoder, Encoder } from '../src/ebml';
 
 describe('ebml', () => {
     describe('Pipeline', () => {
