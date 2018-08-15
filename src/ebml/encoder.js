@@ -59,15 +59,17 @@ export default class EbmlEncoder extends Transform {
         return this.mStack;
     }
 
-    set buffer(buffer) {
-        if (this.mBuffer !== buffer) {
-            this.mBuffer = buffer;
-        }
+    set buffer(buffr) {
+        this.mBuffer = buffr;
     }
 
     set corked(corked) {
         // cheap copy -- no check needed
         this.mCorked = corked;
+    }
+
+    set stack(stak) {
+        this.mStack = stak;
     }
 
     /**
@@ -132,6 +134,14 @@ export default class EbmlEncoder extends Transform {
         this.flush();
     }
 
+    _flush(done) {
+        this.flush(done);
+    }
+
+    _bufferAndFlush(buffer) {
+        this.bufferAndFlush(buffer);
+    }
+
     /**
      * gets a Buffer of the type of tagName
      * @static
@@ -139,7 +149,7 @@ export default class EbmlEncoder extends Transform {
      * @return {Buffer}         A buffer containing the schema information
      */
     static getSchemaInfo(tagName) {
-        const tagStr = Object.keys(schema).filter(
+        const tagStr = Object.keys(schema).find(
             str => schema[str].name === tagName
         );
         if (tagStr) {
@@ -165,8 +175,8 @@ export default class EbmlEncoder extends Transform {
         }
         if (tagData) {
             const data = encodeTag(tagId, tagData);
-            if (this.stack.length > 0) {
-                this.stack[this.stack.length - 1].children.push({ data });
+            if (this.mStack.length > 0) {
+                this.mStack[this.mStack.length - 1].children.push({ data });
             } else {
                 this.bufferAndFlush(data.toBuffer());
             }
@@ -176,7 +186,7 @@ export default class EbmlEncoder extends Transform {
     /**
      *
      * @param {String} tagName The name of the tag to start
-     * @param {{end: Number}} info an information object with a `key` parameter
+     * @param {{end: Number}} info an information object with a `end` parameter
      */
     startTag(tagName, { end }) {
         const tagId = EbmlEncoder.getSchemaInfo(tagName);
@@ -191,19 +201,19 @@ export default class EbmlEncoder extends Transform {
             children: []
         };
 
-        if (this.stack.length > 0) {
-            this.stack[this.stack.length - 1].children.push(tag);
+        if (this.mStack.length > 0) {
+            this.mStack[this.mStack.length - 1].children.push(tag);
         }
-        this.stack.push(tag);
+        this.mStack.push(tag);
     }
 
     endTag() {
-        const tag = this.stack.pop();
+        const tag = this.mStack.pop();
 
         const childTagDataBuffers = tag.children.map(child => child.data);
         tag.data = encodeTag(tag.id, Buffers(childTagDataBuffers), tag.end);
 
-        if (this.stack.length < 1) {
+        if (this.mStack.length < 1) {
             this.bufferAndFlush(tag.data.toBuffer());
         }
     }

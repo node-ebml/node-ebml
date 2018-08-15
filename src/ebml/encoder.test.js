@@ -12,7 +12,6 @@ describe('embl', () => {
                 );
                 done();
             });
-
             return encoder;
         }
 
@@ -26,24 +25,20 @@ describe('embl', () => {
                 }
             ]);
         });
-        it(
-            'should write a tag with a single child',
-            done => {
-                const encoder = createEncoder(
-                    [0x1a, 0x45, 0xdf, 0xa3, 0x84, 0x42, 0x86, 0x81, 0x00],
-                    done
-                );
-                encoder.write(['start', { name: 'EBML' }]);
-                encoder.write([
-                    'tag',
-                    {
-                        name: 'EBMLVersion',
-                        data: Buffer.from([0x00])
-                    }
-                ]);
-                encoder.write(['end', { name: 'EBML' }]);
-            },
-            60000
-        );
+        it('should write a tag with a single child', done => {
+            const encoder = createEncoder(
+                [0x1a, 0x45, 0xdf, 0xa3, 0x84, 0x42, 0x86, 0x81, 0x00],
+                done
+            );
+            encoder.write(['start', { name: 'EBML' }]);
+            encoder.write([
+                'tag',
+                {
+                    name: 'EBMLVersion',
+                    data: Buffer.from([0x00])
+                }
+            ]);
+            encoder.write(['end', { name: 'EBML' }]);
+        });
     });
 });
