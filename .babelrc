@@ -1,7 +1,7 @@
 {
-    "env":{
-        "development": {"ignore": ["**/*.test.js"]},
-        "production": {"ignore": ["**/*.test.js"]}
+    "env": {
+        "development": { "ignore": ["**/*.test.js"] },
+        "production": { "ignore": ["**/*.test.js"] }
     },
     "presets": [
         [
@@ -11,7 +11,8 @@
                     "browsers": ["last 2 versions", "> 1%"],
                     "node": "6.4"
                 }
-            }
+            },
+            "@babel/flow"
         ]
     ],
     "plugins": [

@@ -2,12 +2,12 @@
     "singleQuote": true,
     "overrides": [
         {
-          "files": ".prettierrc",
-          "options": { "parser": "json" }
+            "files": ".prettierrc",
+            "options": { "parser": "json" }
         },
         {
             "files": ".babelrc",
             "options": { "parser": "json" }
-          }
-      ]
+        }
+    ]
 }

@@ -12,12 +12,12 @@
   parserOptions:
     ecmaVersion: 2018
     ecmaFeatures:
-      scriptType: "module"
-  extends: [airbnb-base, "plugin:node/recommended", prettier]
-  plugins: [node, import, prettier]
+      scriptType: 'module'
+  extends: [airbnb-base, 'plugin:node/recommended', 'plugin:flowtype/recommended', prettier]
+  plugins: [node, import, prettier, flowtype]
   rules:
-    "prettier/prettier": "error"
-    "node/no-unsupported-features/es-syntax": 'off'
+    'prettier/prettier': 'error'
+    'node/no-unsupported-features/es-syntax': 'off'
     no-bitwise: 'off'
     'no-extra-parens':
         - 'off'

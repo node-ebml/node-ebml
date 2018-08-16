@@ -1,6 +1,6 @@
 /* eslint no-console:off */
-const ebml = require('./index.js');
 const fs = require('fs');
+const ebml = require('./index.js');
 
 const decoder = new ebml.Decoder();
 
