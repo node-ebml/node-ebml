@@ -15,13 +15,13 @@ describe('ebml', () => {
                 0x42,
                 0x86,
                 0x81,
-                0x00
+                0x00,
             ]);
 
             encoder.on('data', chunk => {
                 assert.strictEqual(
                     chunk.toString('hex'),
-                    buffer.toString('hex')
+                    buffer.toString('hex'),
                 );
                 done();
             });
@@ -38,16 +38,16 @@ describe('ebml', () => {
                 {
                     name: 'Cluster',
                     start: 0,
-                    end: -1
-                }
+                    end: -1,
+                },
             ]);
             encoder.write([
                 'end',
                 {
                     name: 'Cluster',
                     start: 0,
-                    end: -1
-                }
+                    end: -1,
+                },
             ]);
 
             encoder.pipe(decoder).on('data', data => {

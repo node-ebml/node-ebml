@@ -1,7 +1,24 @@
 {
     "env": {
         "development": { "ignore": ["**/*.test.js"] },
-        "production": { "ignore": ["**/*.test.js"] }
+        "production": { "ignore": ["**/*.test.js"] },
+        "test": {
+            "presets": [
+                [
+                    "@babel/env",
+                    {
+                        "targets": {
+                            "browsers": ["last 2 versions", "> 1%"],
+                            "node": "current"
+                        },
+                        "modules": "commonjs",
+                        "useBuiltIns": "usage",
+                        "debug": false
+                    }
+                ],
+                "@babel/flow"
+            ]
+        }
     },
     "presets": [
         [
@@ -11,9 +28,9 @@
                     "browsers": ["last 2 versions", "> 1%"],
                     "node": "6.4"
                 }
-            },
-            "@babel/flow"
-        ]
+            }
+        ],
+        "@babel/flow"
     ],
     "plugins": [
         ["@babel/plugin-proposal-class-properties", { "loose": false }],
