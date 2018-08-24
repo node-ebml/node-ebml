@@ -1,4 +1,5 @@
 /* @flow */
+/* eslint-disable flowtype/space-after-type-colon */
 export type EBMLSchema = {
     name: string,
     type: 'm' | 'u' | 'i' | 'f' | 's' | '8' | 'd' | 'b' | null,
@@ -9,10 +10,11 @@ export type EBMLSchema = {
     webm: boolean,
     // optional params start here
 
-    br?: [string, string, string, string]
-        | [string, string, string]
+    br?:
+        | string
         | [string, string]
-        | string,
+        | [string, string, string]
+        | [string, string, string, string],
     bytesize?: number,
     cppname?: string,
     default?: number | string,
@@ -22,5 +24,5 @@ export type EBMLSchema = {
     mandatory?: boolean,
     maxver?: number,
     recursive?: boolean,
-    strong?: 'informational'
+    strong?: 'informational',
 };

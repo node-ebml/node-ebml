@@ -121,7 +121,7 @@ describe('EBML', () => {
             });
             it('does nothing with invalid tag data', () => {
                 encoder.writeTag('EBMLVersion', null);
-                assert.strictEqual(encoder.stack.length, 0)
+                assert.strictEqual(encoder.stack.length, 0);
             });
             it('throws with an invalid tag name', () => {
                 assert.throws(
