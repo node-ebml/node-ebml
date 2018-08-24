@@ -1,5 +1,20 @@
 {
     "env": {
+        "commonjs": {
+            "presets": [
+                [
+                    "@babel/env",
+                    {
+                        "targets": {
+                            "browsers": ["last 2 versions", "> 1%"],
+                            "node": "6.4"
+                        },
+                        "modules": false
+                    }
+                ],
+                "@babel/flow"
+            ]
+        },
         "development": { "ignore": ["**/*.test.js"] },
         "production": { "ignore": ["**/*.test.js"] },
         "test": {
@@ -27,7 +42,8 @@
                 "targets": {
                     "browsers": ["last 2 versions", "> 1%"],
                     "node": "6.4"
-                }
+                },
+                "modules": false
             }
         ],
         "@babel/flow"

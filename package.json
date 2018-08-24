@@ -2,7 +2,8 @@
   "name": "ebml",
   "version": "2.2.2",
   "description": "ebml parser",
-  "main": "index.js",
+  "main": "lib/ebml.js",
+  "module": "lib/ebml.esm.js",
   "directories": {
     "test": "test"
   },
@@ -10,7 +11,7 @@
     "test": "jest",
     "lint": "eslint src test index.js",
     "lint:fix": "eslint --fix src test index.js",
-    "build": "babel --out-dir lib src",
+    "build": "rollup --config",
     "prepublish": "check-node-version --npm \">=4\" || npm run prepare",
     "prepare": "npm run build"
   },
@@ -59,7 +60,14 @@
     "jest-html-reporter": "^2.4.2",
     "mocha": "~5.2.0",
     "prettier": "^1.13.7",
-    "prettier-eslint": "^8.8.2"
+    "prettier-eslint": "^8.8.2",
+    "rollup": "^0.64.1",
+    "rollup-plugin-babel": "^4.0.0-beta.8",
+    "rollup-plugin-commonjs": "^9.1.5",
+    "rollup-plugin-json": "^3.0.0",
+    "rollup-plugin-node-builtins": "^2.1.2",
+    "rollup-plugin-node-globals": "^1.2.1",
+    "rollup-plugin-node-resolve": "^3.3.0"
   },
   "contributors": [
     "Chris Price <price.c@gmail.com>",
