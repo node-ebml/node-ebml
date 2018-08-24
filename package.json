@@ -9,8 +9,8 @@
   },
   "scripts": {
     "test": "jest",
-    "lint": "eslint src test index.js",
-    "lint:fix": "eslint --fix src test index.js",
+    "lint": "eslint src __test__",
+    "lint:fix": "eslint --fix src __test__",
     "build": "rollup --config",
     "prepublish": "check-node-version --npm \">=4\" || npm run prepare",
     "prepare": "npm run build"
