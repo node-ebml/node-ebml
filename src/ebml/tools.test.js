@@ -1,7 +1,7 @@
 import assert from 'assert';
 import tools from './tools';
 
-describe('embl', () => {
+describe('EBML', () => {
     describe('tools', () => {
         describe('#readVint()', () => {
             function readVint(buffer, expected) {
@@ -33,7 +33,7 @@ describe('embl', () => {
                         for (let k = 0; k < 0xff; k += 3) {
                             readVint(
                                 Buffer.from([i | 0x20, j, k]),
-                                (i << 16) + (j << 8) + k
+                                (i << 16) + (j << 8) + k,
                             );
                         }
                     }
@@ -48,27 +48,27 @@ describe('embl', () => {
                 readVint(Buffer.from([0x08, 0x10, 0x00, 0x00, 0x00]), 2 ** 28);
                 readVint(
                     Buffer.from([0x0f, 0xff, 0xff, 0xff, 0xff]),
-                    2 ** 35 - 1
+                    2 ** 35 - 1,
                 );
             });
             it('should read the correct value for 6 byte int min/max values', () => {
                 readVint(
                     Buffer.from([0x04, 0x08, 0x00, 0x00, 0x00, 0x00]),
-                    2 ** 35
+                    2 ** 35,
                 );
                 readVint(
                     Buffer.from([0x07, 0xff, 0xff, 0xff, 0xff, 0xff]),
-                    2 ** 42 - 1
+                    2 ** 42 - 1,
                 );
             });
             it('should read the correct value for 7 byte int min/max values', () => {
                 readVint(
                     Buffer.from([0x02, 0x04, 0x00, 0x00, 0x00, 0x00, 0x00]),
-                    2 ** 42
+                    2 ** 42,
                 );
                 readVint(
                     Buffer.from([0x03, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff]),
-                    2 ** 49 - 1
+                    2 ** 49 - 1,
                 );
             });
             it('should read the correct value for 8 byte int min value', () => {
@@ -81,9 +81,9 @@ describe('embl', () => {
                         0x00,
                         0x00,
                         0x00,
-                        0x00
+                        0x00,
                     ]),
-                    2 ** 49
+                    2 ** 49,
                 );
             });
             it('should read the correct value for the max representable JS number (2^53)', () => {
@@ -96,9 +96,9 @@ describe('embl', () => {
                         0x00,
                         0x00,
                         0x00,
-                        0x00
+                        0x00,
                     ]),
-                    2 ** 53
+                    2 ** 53,
                 );
             });
             // an unknown value is represented by -1
@@ -112,9 +112,9 @@ describe('embl', () => {
                         0x00,
                         0x00,
                         0x00,
-                        0x01
+                        0x01,
                     ]),
-                    -1
+                    -1,
                 );
             });
             it('should return value -1 for more than max representable JS number (8 byte int max value)', () => {
@@ -127,9 +127,9 @@ describe('embl', () => {
                         0xff,
                         0xff,
                         0xff,
-                        0xff
+                        0xff,
                     ]),
-                    -1
+                    -1,
                 );
             });
             it('should throw for 9+ byte int values', () => {
@@ -144,8 +144,8 @@ describe('embl', () => {
                             0x00,
                             0x00,
                             0xff,
-                            0xff
-                        ])
+                            0xff,
+                        ]),
                     );
                 }, /Unrepresentable length/);
             });
@@ -155,7 +155,7 @@ describe('embl', () => {
                 const actual = tools.writeVint(value);
                 assert.strictEqual(
                     expected.toString('hex'),
-                    actual.toString('hex')
+                    actual.toString('hex'),
                 );
             }
 
@@ -184,31 +184,31 @@ describe('embl', () => {
             it('should write 5 byte int min/max value', () => {
                 writeVint(
                     2 ** 28 - 1,
-                    Buffer.from([0x08, 0x0f, 0xff, 0xff, 0xff])
+                    Buffer.from([0x08, 0x0f, 0xff, 0xff, 0xff]),
                 );
                 writeVint(
                     2 ** 35 - 2,
-                    Buffer.from([0x0f, 0xff, 0xff, 0xff, 0xfe])
+                    Buffer.from([0x0f, 0xff, 0xff, 0xff, 0xfe]),
                 );
             });
             it('should write 6 byte int min/max value', () => {
                 writeVint(
                     2 ** 35 - 1,
-                    Buffer.from([0x04, 0x07, 0xff, 0xff, 0xff, 0xff])
+                    Buffer.from([0x04, 0x07, 0xff, 0xff, 0xff, 0xff]),
                 );
                 writeVint(
                     2 ** 42 - 2,
-                    Buffer.from([0x07, 0xff, 0xff, 0xff, 0xff, 0xfe])
+                    Buffer.from([0x07, 0xff, 0xff, 0xff, 0xff, 0xfe]),
                 );
             });
             it('should write 7 byte int min/max value', () => {
                 writeVint(
                     2 ** 42 - 1,
-                    Buffer.from([0x02, 0x03, 0xff, 0xff, 0xff, 0xff, 0xff])
+                    Buffer.from([0x02, 0x03, 0xff, 0xff, 0xff, 0xff, 0xff]),
                 );
                 writeVint(
                     2 ** 49 - 2,
-                    Buffer.from([0x03, 0xff, 0xff, 0xff, 0xff, 0xff, 0xfe])
+                    Buffer.from([0x03, 0xff, 0xff, 0xff, 0xff, 0xff, 0xfe]),
                 );
             });
             it('should write the correct value for 8 byte int min value', () => {
@@ -222,8 +222,8 @@ describe('embl', () => {
                         0xff,
                         0xff,
                         0xff,
-                        0xff
-                    ])
+                        0xff,
+                    ]),
                 );
             });
             it('should write the correct value for the max representable JS number (2^53)', () => {
@@ -237,8 +237,8 @@ describe('embl', () => {
                         0x00,
                         0x00,
                         0x00,
-                        0x00
-                    ])
+                        0x00,
+                    ]),
                 );
             });
 
@@ -261,5 +261,126 @@ describe('embl', () => {
                 }, /Unrepresentable value/);
             });
         });
+        describe('#concatenate', () => {
+            it('returns the 2nd buffer if the first is invalid', () => {
+                assert.ok(
+                    tools.concatenate(null, Buffer.from([0x01])),
+                    Buffer.from([0x01]),
+                );
+            });
+            it('returns the 1st buffer if the second is invalid', () => {
+                assert.ok(
+                    tools.concatenate(Buffer.from([0x01]), null),
+                    Buffer.from([0x01]),
+                );
+            });
+            it('returns the two buffers joined if both are valid', () => {
+                assert.ok(
+                    tools.concatenate(Buffer.from([0x01]), Buffer.from([0x01])),
+                    Buffer.from([0x01, 0x01]),
+                );
+            });
+        });
+        describe('#readFloat', () => {
+            it('can read 32-bit floats', () => {
+                assert.strictEqual(
+                    tools.readFloat(Buffer.from([0x40, 0x20, 0x00, 0x00])),
+                    2.5,
+                );
+            });
+            it('can read 64-bit floats', () => {
+                assert.strictEqual(
+                    tools.readFloat(
+                        Buffer.from([
+                            0x40,
+                            0x04,
+                            0x00,
+                            0x00,
+                            0x00,
+                            0x00,
+                            0x00,
+                            0x00,
+                        ]),
+                    ),
+                    2.5,
+                );
+            });
+            it('returns NaN with invalid sized arrays', () => {
+                assert.strictEqual(
+                    tools.readFloat(Buffer.from([0x40, 0x20, 0x00])),
+                    NaN,
+                );
+            });
+        });
+        describe('#readUnsigned', () => {
+            it('handles 8-bit ints', () => {
+                assert.strictEqual(tools.readUnsigned(Buffer.from([0x07])), 7);
+            });
+            it('handles 16-bit ints', () => {
+                assert.strictEqual(
+                    tools.readUnsigned(Buffer.from([0x07, 0x07])),
+                    1799,
+                );
+            });
+            it('handles 32-bit ints', () => {
+                assert.strictEqual(
+                    tools.readUnsigned(Buffer.from([0x07, 0x07, 0x07, 0x07])),
+                    117901063,
+                );
+            });
+            it('handles ints smaller than 49 bits as numbers', () => {
+                assert.strictEqual(
+                    tools.readUnsigned(
+                        Buffer.from([0x07, 0x07, 0x07, 0x07, 0x07]),
+                    ),
+                    30182672135,
+                );
+                assert.strictEqual(
+                    tools.readUnsigned(
+                        Buffer.from([0x07, 0x07, 0x07, 0x07, 0x07, 0x07]),
+                    ),
+                    7726764066567,
+                );
+            });
+            it('returns ints 49 bits or larger as strings', () => {
+                assert.strictEqual(
+                    tools.readUnsigned(
+                        Buffer.from([0x1, 0x07, 0x07, 0x07, 0x07, 0x07, 0x07]),
+                    ),
+                    '01070707070707',
+                );
+                assert.strictEqual(
+                    typeof tools.readUnsigned(
+                        Buffer.from([0x1, 0x07, 0x07, 0x07, 0x07, 0x07, 0x07]),
+                    ),
+                    'string',
+                );
+            });
+        });
+        describe('#readUtf8', () => {});
+        describe('#readSigned', () => {
+            it('handles 8-bit ints', () => {
+                assert.strictEqual(tools.readSigned(Buffer.from([0x07])), 7);
+            });
+            it('handles 16-bit ints', () => {
+                assert.strictEqual(
+                    tools.readSigned(Buffer.from([0x07, 0x07])),
+                    1799,
+                );
+            });
+            it('handles 32-bit ints', () => {
+                assert.strictEqual(
+                    tools.readSigned(Buffer.from([0x07, 0x07, 0x07, 0x07])),
+                    117901063,
+                );
+            });
+            it('returns NaN with invalid sized arrays', () => {
+                assert.strictEqual(
+                    tools.readSigned(Buffer.from([0x40, 0x20, 0x00])),
+                    NaN,
+                );
+            });
+        });
+        describe('#readDataFromTag', () => {});
     });
 });

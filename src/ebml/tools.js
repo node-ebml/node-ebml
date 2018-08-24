@@ -23,7 +23,7 @@ export default class Tools {
                 if (value >= 2 ** 8 && buffer[start + 7] > 0) {
                     return {
                         length,
-                        value: -1
+                        value: -1,
                     };
                 }
             }
@@ -33,7 +33,7 @@ export default class Tools {
 
         return {
             length,
-            value
+            value,
         };
     }
 
@@ -237,7 +237,7 @@ export default class Tools {
             keyframe,
             payload,
             track,
-            value
+            value,
         };
     }
 }

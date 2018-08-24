@@ -4,7 +4,7 @@ import { Decoder } from '../src/ebml';
 
 process.setMaxListeners(Infinity);
 
-describe('embl', () => {
+describe('EBML', () => {
     describe('Values in tags', () => {
         let data = fs.readFileSync('media/video-webm-codecs-avc1-42E01E.webm');
 

@@ -1,7 +1,7 @@
 import assert from 'assert';
 import Encoder from './encoder';
 
-describe('embl', () => {
+describe('EBML', () => {
     describe('Encoder', () => {
         function createEncoder(expected, done) {
             const encoder = new Encoder();

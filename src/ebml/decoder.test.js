@@ -5,7 +5,7 @@ const STATE_TAG = 1;
 const STATE_SIZE = 2;
 const STATE_CONTENT = 3;
 
-describe('embl', () => {
+describe('EBML', () => {
     describe('Decoder', () => {
         it('should wait for more data if a tag is longer than the buffer', () => {
             const decoder = new Decoder();
@@ -76,7 +76,7 @@ describe('embl', () => {
                     assert.strictEqual(type, 'u');
                     assert.deepStrictEqual(data, Buffer.from([0x01]));
                     done();
-                }
+                },
             );
             decoder.write(Buffer.from([0x42, 0x86, 0x81, 0x01]));
         });
@@ -94,7 +94,7 @@ describe('embl', () => {
                     assert.strictEqual(type, 'm');
                     assert.strictEqual(data, undefined); // eslint-disable-line no-undefined
                     done();
-                }
+                },
             );
 
             decoder.write(Buffer.from([0x1a, 0x45, 0xdf, 0xa3, 0x80]));
@@ -119,6 +119,33 @@ describe('embl', () => {
             });
             decoder.write(Buffer.from([0x1a, 0x45, 0xdf, 0xa3]));
             decoder.write(Buffer.from([0x84, 0x42, 0x86, 0x81, 0x00]));
+        });
+        describe('::getSchemaInfo', () => {
+            it('returns a correct tag if possible', () => {
+                assert.ok(Decoder.getSchemaInfo(0x4286), {
+                    name: 'EBMLVersion',
+                    level: 1,
+                    type: 'u',
+                    mandatory: true,
+                    default: 1,
+                    minver: 1,
+                    description:
+                        'The version of EBML parser used to create the file.',
+                    multiple: false,
+                    webm: false,
+                });
+            });
+            it('returns a default object if not found', () => {
+                assert.ok(Decoder.getSchemaInfo(0x404), {
+                    type: null,
+                    name: 'unknown',
+                    description: '',
+                    level: -1,
+                    minver: -1,
+                    multiple: false,
+                    webm: false,
+                });
+            });
         });
     });
 });

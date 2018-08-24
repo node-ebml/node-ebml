@@ -1,6 +1,9 @@
+/* @flow */
 import { Transform } from 'stream';
 import tools from './tools';
 import schema from './schema';
+
+import type { EBMLSchema } from './types/schema.types';
 
 const debug = require('debug')('ebml:decoder');
 
@@ -14,14 +17,14 @@ export default class EbmlDecoder extends Transform {
      * @private
      * @type {Buffer}
      */
-    mBuffer = null;
+    mBuffer: Buffer;
 
     /**
      * @private
      * @property
      * @readonly
      */
-    mTagStack = [];
+    mTagStack: EBMLSchema[] = [];
 
     /**
      * @property
@@ -35,7 +38,7 @@ export default class EbmlDecoder extends Transform {
      * @private
      * @type {Number}
      */
-    mCursor = 0;
+    mCursor: number = 0;
 
     /**
      * @property
@@ -46,9 +49,9 @@ export default class EbmlDecoder extends Transform {
 
     /**
      * @constructor
-     * @param {TransformOptions} options The options to be passed along to the super class
+     * @param {mixed} options The options to be passed along to the super class
      */
-    constructor(options = {}) {
+    constructor(options: mixed = {}) {
         super({ ...options, readableObjectMode: true });
     }
 
@@ -72,28 +75,24 @@ export default class EbmlDecoder extends Transform {
         return this.mTotal;
     }
 
-    set buffer(buffer) {
-        if (this.mBuffer !== buffer) {
-            this.mBuffer = buffer;
-        }
+    set buffer(buffer: Buffer) {
+        this.mBuffer = buffer;
     }
 
-    set cursor(cursor) {
+    set cursor(cursor: number) {
         // cheap copy -- no check needed
         this.mCursor = cursor;
     }
 
-    set state(state) {
-        if (this.mState !== state) {
-            this.mState = state;
-        }
+    set state(state: number) {
+        this.mState = state;
     }
 
-    set total(total) {
+    set total(total: number) {
         this.mTotal = total;
     }
 
-    _transform(chunk, enc, done) {
+    _transform(chunk: string | Buffer, enc: string, done: () => void) {
         if (!this.buffer) {
             this.buffer = Buffer.from(chunk);
         } else {
@@ -115,13 +114,19 @@ export default class EbmlDecoder extends Transform {
         done();
     }
 
-    static getSchemaInfo(tagStr) {
-        return (
-            schema[tagStr] || {
-                type: 'unknown',
-                name: 'unknown'
-            }
-        );
+    static getSchemaInfo(tag: number): EBMLSchema {
+        if (Number.isInteger(tag) && schema.has(tag)) {
+            return schema.get(tag);
+        }
+        return {
+            type: null,
+            name: 'unknown',
+            description: '',
+            level: -1,
+            minver: -1,
+            multiple: false,
+            webm: false,
+        };
     }
 
     readTag() {
@@ -145,9 +150,9 @@ export default class EbmlDecoder extends Transform {
         const tagStr = tools.readHexString(
             this.buffer,
             this.cursor,
-            this.cursor + tag.length
+            this.cursor + tag.length,
         );
-
+        const tagNum = Number.parseInt(tagStr, 16);
         this.cursor += tag.length;
         this.total += tag.length;
         this.state = STATE_SIZE;
@@ -155,10 +160,10 @@ export default class EbmlDecoder extends Transform {
         const tagObj = {
             tag: tag.value,
             tagStr,
-            type: EbmlDecoder.getSchemaInfo(tagStr).type,
-            name: EbmlDecoder.getSchemaInfo(tagStr).name,
+            type: EbmlDecoder.getSchemaInfo(tagNum).type,
+            name: EbmlDecoder.getSchemaInfo(tagNum).name,
             start,
-            end: start + tag.length
+            end: start + tag.length,
         };
 
         this.tagStack.push(tagObj);
@@ -226,7 +231,7 @@ export default class EbmlDecoder extends Transform {
 
         const data = this.buffer.subarray(
             this.cursor,
-            this.cursor + tagObj.dataSize
+            this.cursor + tagObj.dataSize,
         );
         this.total += tagObj.dataSize;
         this.state = STATE_TAG;
