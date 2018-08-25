@@ -183,3 +183,5 @@ tags
 # babel generated folder now; no need for it to be kept
 lib/
 /flow-typed/npm/
+# https://atom.io/packages/atomic-management
+.atom/*
