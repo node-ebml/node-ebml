@@ -307,8 +307,9 @@ describe('EBML', () => {
             });
             it('returns NaN with invalid sized arrays', () => {
                 assert.strictEqual(
-                    tools.readFloat(Buffer.from([0x40, 0x20, 0x00])),
-                    NaN,
+                    Number.isNaN(
+                        tools.readFloat(Buffer.from([0x40, 0x20, 0x00])),
+                    ),
                 );
             });
         });
@@ -375,9 +376,10 @@ describe('EBML', () => {
                 );
             });
             it('returns NaN with invalid sized arrays', () => {
-                assert.strictEqual(
-                    tools.readSigned(Buffer.from([0x40, 0x20, 0x00])),
-                    NaN,
+                assert.ok(
+                    Number.isNaN(
+                        tools.readSigned(Buffer.from([0x40, 0x20, 0x00])),
+                    ),
                 );
             });
         });
