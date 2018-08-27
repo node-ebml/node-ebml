@@ -23,7 +23,7 @@ describe('ebml', () => {
                     chunk.toString('hex'),
                     buffer.toString('hex'),
                 );
-                decoder.destroy();
+                encoder.on('finish', done);
                 done();
             });
             encoder.on('finish', done);

@@ -76,7 +76,7 @@ describe('EBML', () => {
                     assert.strictEqual(type, 'u');
                     assert.deepStrictEqual(data, Buffer.from([0x01]));
                     done();
-                    decoder.destroy();
+                    decoder.on('finish', done);
                 },
             );
             decoder.on('finish', done);
@@ -97,7 +97,7 @@ describe('EBML', () => {
                     assert.strictEqual(type, 'm');
                     assert.strictEqual(data, undefined); // eslint-disable-line no-undefined
                     done();
-                    decoder.destroy();
+                    decoder.on('finish', done);
                 },
             );
             decoder.on('finish', done);
@@ -119,7 +119,7 @@ describe('EBML', () => {
                     assert.strictEqual(data.type, 'm');
                     assert.strictEqual(data.data, undefined); // eslint-disable-line no-undefined
                     done();
-                    decoder.destroy();
+                    decoder.on('finish', done);
                 } else {
                     tags += 1;
                 }

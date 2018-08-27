@@ -133,7 +133,7 @@ describe('EBML', () => {
                 const decoder = new Decoder();
                 decoder.on('data', ([tag, { name, value, payload, track }]) => {
                     if (tag === 'tag' && name === 'SimpleBlock') {
-                        if (value > 0) {
+                        if (value > 0 && value < 200) {
                             /* look at second simpleBlock */
                             assert.strictEqual(track, 1, 'track');
                             assert.strictEqual(value, 191, 'value (timestamp)');
@@ -142,7 +142,6 @@ describe('EBML', () => {
                                 169,
                                 JSON.stringify(payload),
                             );
-                            decoder.destroy();
                             done();
                         }
                     }
@@ -205,7 +204,6 @@ describe('EBML', () => {
                 decoder.on('data', ([tag, { name, value }]) => {
                     if (tag === 'tag' && name === 'TimecodeScale') {
                         assert.strictEqual(value, 1000000);
-                        decoder.destroy();
                         done();
                     }
                 });
@@ -215,7 +213,6 @@ describe('EBML', () => {
                         1,
                         'hit end of file without finding tag.',
                     );
-                    decoder.destroy();
                     done();
                 });
                 decoder.write(data);
@@ -226,7 +223,6 @@ describe('EBML', () => {
                 decoder.on('data', ([tag, { name, value }]) => {
                     if (tag === 'tag' && name === 'TrackUID') {
                         assert.strictEqual(value, '306d02aaa74d06');
-                        decoder.destroy();
                         done();
                     }
                     decoder.on('finish', () => {
@@ -235,7 +231,6 @@ describe('EBML', () => {
                             1,
                             'hit end of file without finding tag.',
                         );
-                        decoder.destroy();
                         done();
                     });
                 });
@@ -247,7 +242,6 @@ describe('EBML', () => {
                 decoder.on('data', ([tag, { name, value }]) => {
                     if (tag === 'tag' && name === 'DocType') {
                         assert.strictEqual(value, 'webm');
-                        decoder.destroy();
                         done();
                     }
                 });
@@ -257,7 +251,6 @@ describe('EBML', () => {
                         1,
                         'hit end of file without finding tag.',
                     );
-                    decoder.destroy();
                     done();
                 });
                 decoder.write(data);
@@ -291,7 +284,7 @@ describe('EBML', () => {
                         { name, payload, value, track, discardable, ...rest },
                     ]) => {
                         if (tag === 'tag' && name === 'SimpleBlock') {
-                            if (value > 0) {
+                            if (value > 0 && value < 100) {
                                 assert.strictEqual(track, 1, 'track');
                                 assert.strictEqual(
                                     value,
@@ -309,7 +302,6 @@ describe('EBML', () => {
                                     false,
                                     'discardable',
                                 );
-                                decoder.destroy();
                                 done();
                             }
                         }

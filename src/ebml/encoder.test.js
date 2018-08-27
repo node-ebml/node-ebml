@@ -10,7 +10,7 @@ describe('EBML', () => {
                     chunk.toString('hex'),
                     Buffer.from(expected).toString('hex'),
                 );
-                encoder.destroy();
+                encoder.on('finish', done);
                 done();
             });
             encoder.on('finish', done);
