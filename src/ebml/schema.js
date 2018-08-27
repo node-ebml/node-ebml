@@ -1,7 +1,4 @@
-/* @flow */
-import type { EBMLSchema } from './types/schema.types';
-
-const schema: Map<number, EBMLSchema> = new Map([
+const schema = new Map([
     [
         0x80,
         {

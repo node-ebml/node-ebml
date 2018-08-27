@@ -4,8 +4,10 @@
   "description": "ebml parser",
   "main": "lib/ebml.js",
   "module": "lib/ebml.esm.js",
+  "browser": "lib/ebml.iife.js",
   "directories": {
-    "test": "test"
+    "test": "__test__",
+    "lib": "lib"
   },
   "scripts": {
     "test": "jest",
@@ -13,7 +15,8 @@
     "lint:fix": "eslint --fix src __test__",
     "build": "rollup --config",
     "prepublish": "check-node-version --npm \">=4\" || npm run prepare",
-    "prepare": "npm run build"
+    "prepare": "npm run build",
+    "prepublishOnly": "NODE_ENV=production npm run build"
   },
   "repository": {
     "type": "git",
@@ -61,13 +64,16 @@
     "mocha": "~5.2.0",
     "prettier": "^1.13.7",
     "prettier-eslint": "^8.8.2",
+    "rimraf": "^2.6.2",
     "rollup": "^0.64.1",
     "rollup-plugin-babel": "^4.0.0-beta.8",
     "rollup-plugin-commonjs": "^9.1.5",
     "rollup-plugin-json": "^3.0.0",
     "rollup-plugin-node-builtins": "^2.1.2",
     "rollup-plugin-node-globals": "^1.2.1",
-    "rollup-plugin-node-resolve": "^3.3.0"
+    "rollup-plugin-node-resolve": "^3.3.0",
+    "rollup-plugin-replace": "^2.0.0",
+    "rollup-plugin-terser": "^1.0.1"
   },
   "contributors": [
     "Chris Price <price.c@gmail.com>",

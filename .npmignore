@@ -3,3 +3,7 @@
 
 src/
 test/
+__test__/
+flow-typed/npm/
+tmp/
+

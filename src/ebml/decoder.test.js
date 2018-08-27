@@ -76,9 +76,12 @@ describe('EBML', () => {
                     assert.strictEqual(type, 'u');
                     assert.deepStrictEqual(data, Buffer.from([0x01]));
                     done();
+                    decoder.destroy();
                 },
             );
+            decoder.on('finish', done);
             decoder.write(Buffer.from([0x42, 0x86, 0x81, 0x01]));
+            decoder.end();
         });
 
         it('should emit correct EBML tag events for master tags', done => {
@@ -94,10 +97,13 @@ describe('EBML', () => {
                     assert.strictEqual(type, 'm');
                     assert.strictEqual(data, undefined); // eslint-disable-line no-undefined
                     done();
+                    decoder.destroy();
                 },
             );
+            decoder.on('finish', done);
 
             decoder.write(Buffer.from([0x1a, 0x45, 0xdf, 0xa3, 0x80]));
+            decoder.end();
         });
 
         it('should emit correct EBML:end events for master tags', done => {
@@ -113,12 +119,16 @@ describe('EBML', () => {
                     assert.strictEqual(data.type, 'm');
                     assert.strictEqual(data.data, undefined); // eslint-disable-line no-undefined
                     done();
+                    decoder.destroy();
                 } else {
                     tags += 1;
                 }
             });
+            decoder.on('finish', done);
+
             decoder.write(Buffer.from([0x1a, 0x45, 0xdf, 0xa3]));
             decoder.write(Buffer.from([0x84, 0x42, 0x86, 0x81, 0x00]));
+            decoder.end();
         });
         describe('::getSchemaInfo', () => {
             it('returns a correct tag if possible', () => {

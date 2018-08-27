@@ -7,9 +7,10 @@
                     {
                         "targets": {
                             "browsers": ["last 2 versions", "> 1%"],
-                            "node": "6.4"
+                            "node": 6
                         },
-                        "modules": false
+                        "modules": false,
+                        "useBuiltIns": "usage"
                     }
                 ],
                 "@babel/flow"
@@ -27,8 +28,7 @@
                             "node": "current"
                         },
                         "modules": "commonjs",
-                        "useBuiltIns": "usage",
-                        "debug": false
+                        "useBuiltIns": "usage"
                     }
                 ],
                 "@babel/flow"
@@ -41,18 +41,19 @@
             {
                 "targets": {
                     "browsers": ["last 2 versions", "> 1%"],
-                    "node": "6.4"
+                    "node": 6
                 },
-                "modules": false
+                "modules": false,
+                "useBuiltIns": "usage"
             }
         ],
         "@babel/flow"
     ],
     "plugins": [
-        ["@babel/plugin-proposal-class-properties", { "loose": false }],
-        "@babel/plugin-proposal-export-default-from",
-        "@babel/plugin-proposal-export-namespace-from",
-        "@babel/plugin-proposal-logical-assignment-operators",
-        ["@babel/plugin-proposal-optional-chaining", { "loose": false }]
+        ["@babel/proposal-class-properties", { "loose": false }],
+        "@babel/proposal-export-default-from",
+        "@babel/proposal-export-namespace-from",
+        "@babel/proposal-logical-assignment-operators",
+        ["@babel/proposal-optional-chaining", { "loose": false }]
     ]
 }

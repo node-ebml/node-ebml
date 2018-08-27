@@ -10,6 +10,7 @@ describe('EBML', () => {
                     chunk.toString('hex'),
                     Buffer.from(expected).toString('hex'),
                 );
+                encoder.destroy();
                 done();
             });
             encoder.on('finish', done);
@@ -153,7 +154,7 @@ describe('EBML', () => {
                 const encoder = new Encoder();
                 encoder.write(['404NotFound', { name: 'EBML' }]);
                 assert.notStrictEqual(encoder.buffer instanceof Buffer);
-                assert.strictEqual(encoder.buffer, null);
+                assert.ok(encoder.buffer == null);
             });
         });
         describe('#_bufferAndFlush', () => {
@@ -163,15 +164,15 @@ describe('EBML', () => {
                 encoder = new Encoder();
             });
             it('should create a new buffer (but still be empty after eval) with an empty buffer', () => {
-                assert.strictEqual(encoder.buffer, null);
+                assert.ok(encoder.buffer == null);
                 encoder._bufferAndFlush(Buffer.from([0x42, 0x86, 0x81, 0x01]));
-                assert.strictEqual(encoder.buffer, null);
+                assert.ok(encoder.buffer == null);
             });
             it('should append to the buffer (and empty after eval) with an existing buffer', () => {
                 encoder.buffer = Buffer.from([0x42, 0x86, 0x81, 0x01]);
                 assert.ok(encoder.buffer instanceof Buffer);
                 encoder._bufferAndFlush(Buffer.from([0x42, 0x86, 0x81, 0x01]));
-                assert.strictEqual(encoder.buffer, null);
+                assert.ok(encoder.buffer == null);
             });
             /* eslint-enable no-underscore-dangle */
         });

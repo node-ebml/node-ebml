@@ -4,6 +4,8 @@ import Buffers from 'buffers';
 import schema from './schema';
 import tools from './tools';
 
+import type { Tag } from './types/tag.types';
+
 const debug = require('debug')('ebml:encoder');
 
 function encodeTag(tagId: number | string, tagData: Buffers, end: number) {
@@ -24,11 +26,11 @@ function encodeTag(tagId: number | string, tagData: Buffers, end: number) {
  */
 export default class EbmlEncoder extends Transform {
     /**
-     * @type {Buffers}
+     * @type {Buffer}
      * @property
      * @private
      */
-    mBuffer: Buffers = null;
+    mBuffer: Buffer;
 
     /**
      * @private
@@ -40,9 +42,9 @@ export default class EbmlEncoder extends Transform {
     /**
      * @private
      * @property
-     * @type {Array<EBMLSchema>}
+     * @type {Array<Tag>}
      */
-    mStack: EBMLSchema[] = [];
+    mStack: Tag[] = [];
 
     constructor(options: mixed = {}) {
         super({ ...options, writableObjectMode: true });
@@ -60,26 +62,25 @@ export default class EbmlEncoder extends Transform {
         return this.mStack;
     }
 
-    set buffer(buffr) {
-        this.mBuffer = buffr;
+    set buffer(buffer: Buffer) {
+        this.mBuffer = buffer;
     }
 
-    set corked(corked) {
-        // cheap copy -- no check needed
+    set corked(corked: boolean) {
         this.mCorked = corked;
     }
 
-    set stack(stak: EBMLSchema[]) {
+    set stack(stak: Tag[]) {
         this.mStack = stak;
     }
 
     /**
      *
-     * @param {[string, EBMLSchema]} chunk array of chunk data, starting with the tag
+     * @param {[string, Tag]} chunk array of chunk data, starting with the tag
      * @param {string} enc the encoding type (not used)
      * @param {Function} done a callback method to call after the transformation
      */
-    _transform(chunk: [string, EBMLSchema], enc: string, done: () => void) {
+    _transform(chunk: [string, Tag], enc: string, done: () => void) {
         const [tag, { data, name, ...rest }] = chunk;
         debug(`encode ${tag} ${name}`);
 
@@ -91,7 +92,7 @@ export default class EbmlEncoder extends Transform {
                 this.writeTag(name, data);
                 break;
             case 'end':
-                this.endTag(name);
+                this.endTag();
                 break;
             default:
                 break;
@@ -104,7 +105,7 @@ export default class EbmlEncoder extends Transform {
      * @private
      * @param {Function} done callback function
      */
-    flush(done = () => {}) {
+    flush(done: () => void = () => {}) {
         if (!this.buffer || this.corked) {
             debug('no buffer/nothing pending');
             done();
@@ -135,7 +136,7 @@ export default class EbmlEncoder extends Transform {
         this.flush();
     }
 
-    _flush(done) {
+    _flush(done: () => void = () => {}) {
         this.flush(done);
     }
 
@@ -149,7 +150,7 @@ export default class EbmlEncoder extends Transform {
      * @param  {string} tagName to be looked up
      * @return {number}         A buffer containing the schema information
      */
-    static getSchemaInfo(tagName) {
+    static getSchemaInfo(tagName: string): number {
         const tagId = Array.from(schema.keys()).find(
             str => schema.get(str).name === tagName,
         );
@@ -169,7 +170,7 @@ export default class EbmlEncoder extends Transform {
         this.flush();
     }
 
-    writeTag(tagName: string, tagData) {
+    writeTag(tagName: string, tagData: Tag) {
         const tagId = EbmlEncoder.getSchemaInfo(tagName);
         if (!tagId) {
             throw new Error(`No schema entry found for ${tagName}`);
@@ -189,7 +190,7 @@ export default class EbmlEncoder extends Transform {
      * @param {String} tagName The name of the tag to start
      * @param {{end: Number}} info an information object with a `end` parameter
      */
-    startTag(tagName, { end }: { end: number }) {
+    startTag(tagName: string, { end }: { end: number }) {
         const tagId = EbmlEncoder.getSchemaInfo(tagName);
         if (!tagId) {
             throw new Error(`No schema entry found for ${tagName}`);

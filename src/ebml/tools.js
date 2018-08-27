@@ -4,7 +4,7 @@ export default class Tools {
      * https://www.matroska.org/technical/specs/index.html#EBML_ex
      * @param {Buffer} buffer containing input
      * @param {Number} [start=0] position in buffer
-     * @returns {{length: Number, value: Object}}  value / length object
+     * @returns {{length: Number, value: number}}  value / length object
      */
     static readVint(buffer, start = 0) {
         const length = 8 - Math.floor(Math.log2(buffer[start]));
@@ -104,15 +104,8 @@ export default class Tools {
      * @return {string|null}      the decoded text, or null if unable to
      */
     static readUtf8(buff) {
-        if (typeof window === 'undefined') {
-            return Buffer.from(buff).toString('utf8');
-        }
         try {
-            /* redmond Middle School science projects don't do this. */
-            if (typeof TextDecoder !== 'undefined') {
-                return new TextDecoder('utf8').decode(buff);
-            }
-            return null;
+            return Buffer.from(buff).toString('utf8');
         } catch (exception) {
             return null;
         }
@@ -183,9 +176,9 @@ export default class Tools {
     /**
      * Reads the data from a tag
      * @static
-     * @param  {{type: string, name: string, discardable: Boolean, keyframe: Boolean, payload: Buffer, track: Object}} tagObj The tag object to be read
+     * @param  {TagData} tagObj The tag object to be read
      * @param  {Buffer} data Data to be transformed
-     * @return {{ data: Buffer, discardable: Boolean, keyframe: Boolean, payload: Buffer, track: Object, value: number| string }} result
+     * @return {Tag} result
      */
     static readDataFromTag(tagObj, data) {
         const { type, name } = tagObj;
@@ -217,14 +210,14 @@ export default class Tools {
 
         if (name === 'SimpleBlock' || name === 'Block') {
             let p = 0;
-            const trk = Tools.readVint(data, p);
-            p += trk.length;
-            track = trk.value;
+            const { length, value: trak } = Tools.readVint(data, p);
+            p += length;
+            track = trak;
             value = Tools.readSigned(data.subarray(p, p + 2));
             p += 2;
             if (name === 'SimpleBlock') {
-                keyframe = Boolean(data[trk.length + 2] & 0x80);
-                discardable = Boolean(data[trk.length + 2] & 0x01);
+                keyframe = Boolean(data[length + 2] & 0x80);
+                discardable = Boolean(data[length + 2] & 0x01);
             }
             p += 1;
             payload = data.subarray(p);

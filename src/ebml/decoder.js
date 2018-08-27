@@ -1,9 +1,6 @@
-/* @flow */
 import { Transform } from 'stream';
 import tools from './tools';
 import schema from './schema';
-
-import type { EBMLSchema } from './types/schema.types';
 
 const debug = require('debug')('ebml:decoder');
 
@@ -17,14 +14,14 @@ export default class EbmlDecoder extends Transform {
      * @private
      * @type {Buffer}
      */
-    mBuffer: Buffer;
+    mBuffer = null;
 
     /**
      * @private
      * @property
      * @readonly
      */
-    mTagStack: EBMLSchema[] = [];
+    mTagStack = [];
 
     /**
      * @property
@@ -38,7 +35,7 @@ export default class EbmlDecoder extends Transform {
      * @private
      * @type {Number}
      */
-    mCursor: number = 0;
+    mCursor = 0;
 
     /**
      * @property
@@ -49,9 +46,9 @@ export default class EbmlDecoder extends Transform {
 
     /**
      * @constructor
-     * @param {mixed} options The options to be passed along to the super class
+     * @param {Object} options The options to be passed along to the super class
      */
-    constructor(options: mixed = {}) {
+    constructor(options = {}) {
         super({ ...options, readableObjectMode: true });
     }
 
@@ -75,24 +72,26 @@ export default class EbmlDecoder extends Transform {
         return this.mTotal;
     }
 
-    set buffer(buffer: Buffer) {
+    set buffer(buffer) {
         this.mBuffer = buffer;
     }
 
-    set cursor(cursor: number) {
-        // cheap copy -- no check needed
+    /**
+     * @param {number} cursor
+     */
+    set cursor(cursor) {
         this.mCursor = cursor;
     }
 
-    set state(state: number) {
+    set state(state) {
         this.mState = state;
     }
 
-    set total(total: number) {
+    set total(total) {
         this.mTotal = total;
     }
 
-    _transform(chunk: string | Buffer, enc: string, done: () => void) {
+    _transform(chunk, enc, done) {
         if (!this.buffer) {
             this.buffer = Buffer.from(chunk);
         } else {
@@ -114,7 +113,7 @@ export default class EbmlDecoder extends Transform {
         done();
     }
 
-    static getSchemaInfo(tag: number): EBMLSchema {
+    static getSchemaInfo(tag) {
         if (Number.isInteger(tag) && schema.has(tag)) {
             return schema.get(tag);
         }
@@ -134,7 +133,6 @@ export default class EbmlDecoder extends Transform {
 
         if (this.cursor >= this.buffer.length) {
             debug('waiting for more data');
-
             return false;
         }
 
@@ -209,38 +207,43 @@ export default class EbmlDecoder extends Transform {
     }
 
     readContent() {
-        const tagObj = this.tagStack[this.tagStack.length - 1];
+        const { tagStr, type, dataSize, ...rest } = this.tagStack[
+            this.tagStack.length - 1
+        ];
 
-        debug(`parsing content for tag: ${tagObj.tagStr}`);
+        debug(`parsing content for tag: ${tagStr}`);
 
-        if (tagObj.type === 'm') {
+        if (type === 'm') {
             debug('content should be tags');
-            this.push(['start', tagObj]);
+            this.push(['start', { tagStr, type, dataSize, ...rest }]);
             this.state = STATE_TAG;
 
             return true;
         }
 
-        if (this.buffer.length < this.cursor + tagObj.dataSize) {
+        if (this.buffer.length < this.cursor + dataSize) {
             debug(`got: ${this.buffer.length}`);
-            debug(`need: ${this.cursor + tagObj.dataSize}`);
+            debug(`need: ${this.cursor + dataSize}`);
             debug('waiting for more data');
 
             return false;
         }
 
-        const data = this.buffer.subarray(
-            this.cursor,
-            this.cursor + tagObj.dataSize,
-        );
-        this.total += tagObj.dataSize;
+        const data = this.buffer.subarray(this.cursor, this.cursor + dataSize);
+        this.total += dataSize;
         this.state = STATE_TAG;
-        this.buffer = this.buffer.subarray(this.cursor + tagObj.dataSize);
+        this.buffer = this.buffer.subarray(this.cursor + dataSize);
         this.cursor = 0;
 
         this.tagStack.pop(); // remove the object from the stack
 
-        this.push(['tag', tools.readDataFromTag(tagObj, Buffer.from(data))]);
+        this.push([
+            'tag',
+            tools.readDataFromTag(
+                { tagStr, type, dataSize, ...rest },
+                Buffer.from(data),
+            ),
+        ]);
 
         while (this.tagStack.length > 0) {
             const topEle = this.tagStack[this.tagStack.length - 1];

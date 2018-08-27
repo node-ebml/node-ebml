@@ -23,10 +23,13 @@ describe('ebml', () => {
                     chunk.toString('hex'),
                     buffer.toString('hex'),
                 );
+                decoder.destroy();
                 done();
             });
+            encoder.on('finish', done);
             decoder.pipe(encoder);
             decoder.write(buffer);
+            decoder.end();
         });
 
         it('should support end === -1', done => {
@@ -56,6 +59,8 @@ describe('ebml', () => {
                 assert.strictEqual(data[1].end, -1);
                 done();
             });
+            encoder.pipe(decoder).on('finish', done);
+            encoder.end();
         });
     });
 });
