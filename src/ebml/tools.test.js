@@ -306,7 +306,7 @@ describe('EBML', () => {
                 );
             });
             it('returns NaN with invalid sized arrays', () => {
-                assert.strictEqual(
+                assert.ok(
                     Number.isNaN(
                         tools.readFloat(Buffer.from([0x40, 0x20, 0x00])),
                     ),
