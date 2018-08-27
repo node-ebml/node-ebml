@@ -1,8 +1,8 @@
 /* eslint no-console:off */
-const ebml = require('./index.js');
 const fs = require('fs');
+const { Decoder } = require('./lib/ebml.js');
 
-const decoder = new ebml.Decoder();
+const decoder = new Decoder();
 
 decoder.on('data', chunk => console.log(chunk));
 

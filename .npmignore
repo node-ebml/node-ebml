@@ -1,0 +1,9 @@
+# ignore the src and test folders for publishing; work should be done through
+# the github repo
+
+src/
+test/
+__test__/
+flow-typed/npm/
+tmp/
+

@@ -1,0 +1,14 @@
+{
+    "singleQuote": true,
+    "trailingComma": "all",
+    "overrides": [
+        {
+            "files": ".prettierrc",
+            "options": { "parser": "json" }
+        },
+        {
+            "files": ".babelrc",
+            "options": { "parser": "json" }
+        }
+    ]
+}
