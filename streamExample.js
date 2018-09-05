@@ -1,7 +1,7 @@
 /* eslint no-console:off */
-const ebml = require('./lib/ebml.js');
+const { Decoder } = require('./lib/ebml.js');
 
-const ebmlDecoder = new ebml.Decoder();
+const ebmlDecoder = new Decoder();
 const counts = {};
 
 require('fs')
