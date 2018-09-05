@@ -1,15 +1,20 @@
 {
   "name": "ebml",
-  "version": "2.2.2",
+  "version": "3.0.0",
   "description": "ebml parser",
   "main": "lib/ebml.js",
   "module": "lib/ebml.esm.js",
   "browser": "lib/ebml.iife.js",
+  "maintainers": [
+    "Jonathan Sifuentes <jayands.dev@gmail.com>",
+    "Mark Schmale <masch@masch.it>"
+  ],
   "directories": {
     "test": "__test__",
     "lib": "lib"
   },
   "scripts": {
+    "coverage": "jest --coverage --coverageReporters=text-lcov | coveralls",
     "test": "jest",
     "lint": "eslint src __test__",
     "lint:fix": "eslint --fix src __test__",
@@ -18,10 +23,7 @@
     "prepare": "npm run build",
     "prepublishOnly": "NODE_ENV=production npm run build"
   },
-  "repository": {
-    "type": "git",
-    "url": "git://github.com/themasch/node-ebml.git"
-  },
+  "repository": "github:node-ebml/node-ebml",
   "engines": {
     "node": ">= 6.4"
   },
@@ -37,19 +39,20 @@
     "debug": "~3.1.0"
   },
   "devDependencies": {
-    "@babel/core": "^7.0.0-beta.56",
-    "@babel/plugin-proposal-class-properties": "^7.0.0-rc.1",
-    "@babel/plugin-proposal-export-default-from": "^7.0.0-rc.1",
-    "@babel/plugin-proposal-export-namespace-from": "^7.0.0-rc.1",
-    "@babel/plugin-proposal-logical-assignment-operators": "^7.0.0-rc.1",
-    "@babel/plugin-proposal-optional-chaining": "^7.0.0-rc.1",
-    "@babel/preset-env": "^7.0.0-rc.1",
-    "@babel/preset-flow": "^7.0.0-rc.1",
-    "@babel/register": "^7.0.0-rc.1",
-    "babel-core": "^7.0.0-bridge.0",
+    "@babel/core": "~7.0.0",
+    "@babel/plugin-proposal-class-properties": "~7.0.0",
+    "@babel/plugin-proposal-export-default-from": "~7.0.0",
+    "@babel/plugin-proposal-export-namespace-from": "~7.0.0",
+    "@babel/plugin-proposal-logical-assignment-operators": "~7.0.0",
+    "@babel/plugin-proposal-optional-chaining": "~7.0.0",
+    "@babel/preset-env": "~7.0.0",
+    "@babel/preset-flow": "~7.0.0",
+    "@babel/register": "~7.0.0",
+    "babel-core": "7.0.0-bridge.0",
     "babel-eslint": "^8.2.6",
     "babel-jest": "^23.4.2",
     "check-node-version": "^3.2.0",
+    "coveralls": "^3.0.2",
     "eslint": "^5.2.0",
     "eslint-config-airbnb-base": "^13.0.0",
     "eslint-config-prettier": "^2.9.0",
@@ -84,12 +87,11 @@
     "Mathias Buus <mathiasbuus@gmail.com>",
     "Max Ogden <max@maxogden.com>",
     "Oliver Walzer <walzer@incuray.com>",
-    "Jonathan Sifuentes <jayands.dev@gmail.com>"
+    "greenkeeperio-bot <support@greenkeeper.io>"
   ],
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/themasch/node-ebml/issues"
+    "url": "https://github.com/node-ebml/node-ebml/issues"
   },
-  "homepage": "https://github.com/themasch/node-ebml#readme",
-  "author": "Mark Schmale <masch@masch.it>"
+  "homepage": "https://github.com/node-ebml/node-ebml#readme"
 }
