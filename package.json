@@ -14,7 +14,6 @@
     "lib": "lib"
   },
   "scripts": {
-    "coverage": "jest --coverage --coverageReporters=text-lcov | coveralls",
     "test": "jest",
     "lint": "eslint src __test__",
     "lint:fix": "eslint --fix src __test__",
@@ -52,7 +51,6 @@
     "babel-eslint": "^8.2.6",
     "babel-jest": "^23.4.2",
     "check-node-version": "^3.2.0",
-    "coveralls": "^3.0.2",
     "eslint": "^5.2.0",
     "eslint-config-airbnb-base": "^13.0.0",
     "eslint-config-prettier": "^2.9.0",
