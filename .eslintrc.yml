@@ -19,6 +19,7 @@
     'prettier/prettier': 'error'
     'node/no-unsupported-features/es-syntax': 'off'
     no-bitwise: 'off'
+    indent: ['error', 4]
     'no-extra-parens':
         - 'off'
         - 'all'
