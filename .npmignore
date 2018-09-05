@@ -4,6 +4,12 @@
 src/
 test/
 __test__/
+
+# more development files
+.flowconfig
 flow-typed/npm/
 tmp/
-
+yarn.lock
+.atom/
+coverage/
+.nyc_output/

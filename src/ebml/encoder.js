@@ -1,14 +1,11 @@
-/* @flow */
 import { Transform } from 'stream';
 import Buffers from 'buffers';
 import schema from './schema';
 import tools from './tools';
 
-import type { Tag } from './types/tag.types';
-
 const debug = require('debug')('ebml:encoder');
 
-function encodeTag(tagId: number | string, tagData: Buffers, end: number) {
+function encodeTag(tagId, tagData, end) {
     if (end === -1) {
         return Buffers([
             tagId,
@@ -30,7 +27,7 @@ export default class EbmlEncoder extends Transform {
      * @property
      * @private
      */
-    mBuffer: Buffer;
+    mBuffer = null;
 
     /**
      * @private
@@ -44,9 +41,9 @@ export default class EbmlEncoder extends Transform {
      * @property
      * @type {Array<Tag>}
      */
-    mStack: Tag[] = [];
+    mStack = [];
 
-    constructor(options: mixed = {}) {
+    constructor(options = {}) {
         super({ ...options, writableObjectMode: true });
     }
 
@@ -62,15 +59,15 @@ export default class EbmlEncoder extends Transform {
         return this.mStack;
     }
 
-    set buffer(buffer: Buffer) {
+    set buffer(buffer) {
         this.mBuffer = buffer;
     }
 
-    set corked(corked: boolean) {
+    set corked(corked) {
         this.mCorked = corked;
     }
 
-    set stack(stak: Tag[]) {
+    set stack(stak) {
         this.mStack = stak;
     }
 
@@ -80,9 +77,11 @@ export default class EbmlEncoder extends Transform {
      * @param {string} enc the encoding type (not used)
      * @param {Function} done a callback method to call after the transformation
      */
-    _transform(chunk: [string, Tag], enc: string, done: () => void) {
+    _transform(chunk, enc, done) {
         const [tag, { data, name, ...rest }] = chunk;
-        debug(`encode ${tag} ${name}`);
+        if (debug.enabled) {
+            debug(`encode ${tag} ${name}`);
+        }
 
         switch (tag) {
             case 'start':
@@ -105,15 +104,19 @@ export default class EbmlEncoder extends Transform {
      * @private
      * @param {Function} done callback function
      */
-    flush(done: () => void = () => {}) {
+    flush(done = () => {}) {
         if (!this.buffer || this.corked) {
-            debug('no buffer/nothing pending');
+            if (debug.enabled) {
+                debug('no buffer/nothing pending');
+            }
             done();
 
             return;
         }
 
-        debug(`writing ${this.buffer.length} bytes`);
+        if (debug.enabled) {
+            debug(`writing ${this.buffer.length} bytes`);
+        }
 
         // console.info(`this.buffer.toBuffer = ${this.buffer.buffer}`);
 
@@ -127,7 +130,7 @@ export default class EbmlEncoder extends Transform {
      * @private
      * @param {Buffer | Buffer[]} buffer
      */
-    bufferAndFlush(buffer: Buffers) {
+    bufferAndFlush(buffer) {
         if (this.buffer) {
             this.buffer = tools.concatenate(this.buffer, buffer);
         } else {
@@ -136,7 +139,7 @@ export default class EbmlEncoder extends Transform {
         this.flush();
     }
 
-    _flush(done: () => void = () => {}) {
+    _flush(done = () => {}) {
         this.flush(done);
     }
 
@@ -150,7 +153,7 @@ export default class EbmlEncoder extends Transform {
      * @param  {string} tagName to be looked up
      * @return {number}         A buffer containing the schema information
      */
-    static getSchemaInfo(tagName: string): number {
+    static getSchemaInfo(tagName) {
         const tagId = Array.from(schema.keys()).find(
             str => schema.get(str).name === tagName,
         );
@@ -170,7 +173,7 @@ export default class EbmlEncoder extends Transform {
         this.flush();
     }
 
-    writeTag(tagName: string, tagData: Tag) {
+    writeTag(tagName, tagData) {
         const tagId = EbmlEncoder.getSchemaInfo(tagName);
         if (!tagId) {
             throw new Error(`No schema entry found for ${tagName}`);
@@ -190,7 +193,7 @@ export default class EbmlEncoder extends Transform {
      * @param {String} tagName The name of the tag to start
      * @param {{end: Number}} info an information object with a `end` parameter
      */
-    startTag(tagName: string, { end }: { end: number }) {
+    startTag(tagName, { end }) {
         const tagId = EbmlEncoder.getSchemaInfo(tagName);
         if (!tagId) {
             throw new Error(`No schema entry found for ${tagName}`);

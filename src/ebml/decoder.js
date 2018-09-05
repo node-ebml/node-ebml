@@ -129,10 +129,14 @@ export default class EbmlDecoder extends Transform {
     }
 
     readTag() {
-        debug('parsing tag');
+        if (debug.enabled) {
+            debug('parsing tag');
+        }
 
         if (this.cursor >= this.buffer.length) {
-            debug('waiting for more data');
+            if (debug.enabled) {
+                debug('waiting for more data');
+            }
             return false;
         }
 
@@ -140,7 +144,9 @@ export default class EbmlDecoder extends Transform {
         const tag = tools.readVint(this.buffer, this.cursor);
 
         if (tag == null) {
-            debug('waiting for more data');
+            if (debug.enabled) {
+                debug('waiting for more data');
+            }
 
             return false;
         }
@@ -165,7 +171,9 @@ export default class EbmlDecoder extends Transform {
         };
 
         this.tagStack.push(tagObj);
-        debug(`read tag: ${tagStr}`);
+        if (debug.enabled) {
+            debug(`read tag: ${tagStr}`);
+        }
 
         return true;
     }
@@ -173,10 +181,14 @@ export default class EbmlDecoder extends Transform {
     readSize() {
         const tagObj = this.tagStack[this.tagStack.length - 1];
 
-        debug(`parsing size for tag: ${tagObj.tagStr}`);
+        if (debug.enabled) {
+            debug(`parsing size for tag: ${tagObj.tagStr}`);
+        }
 
         if (this.cursor >= this.buffer.length) {
-            debug('waiting for more data');
+            if (debug.enabled) {
+                debug('waiting for more data');
+            }
 
             return false;
         }
@@ -184,7 +196,9 @@ export default class EbmlDecoder extends Transform {
         const size = tools.readVint(this.buffer, this.cursor);
 
         if (size == null) {
-            debug('waiting for more data');
+            if (debug.enabled) {
+                debug('waiting for more data');
+            }
 
             return false;
         }
@@ -201,7 +215,9 @@ export default class EbmlDecoder extends Transform {
             tagObj.end += size.value + size.length;
         }
 
-        debug(`read size: ${size.value}`);
+        if (debug.enabled) {
+            debug(`read size: ${size.value}`);
+        }
 
         return true;
     }
@@ -211,10 +227,14 @@ export default class EbmlDecoder extends Transform {
             this.tagStack.length - 1
         ];
 
-        debug(`parsing content for tag: ${tagStr}`);
+        if (debug.enabled) {
+            debug(`parsing content for tag: ${tagStr}`);
+        }
 
         if (type === 'm') {
-            debug('content should be tags');
+            if (debug.enabled) {
+                debug('content should be tags');
+            }
             this.push(['start', { tagStr, type, dataSize, ...rest }]);
             this.state = STATE_TAG;
 
@@ -222,9 +242,11 @@ export default class EbmlDecoder extends Transform {
         }
 
         if (this.buffer.length < this.cursor + dataSize) {
-            debug(`got: ${this.buffer.length}`);
-            debug(`need: ${this.cursor + dataSize}`);
-            debug('waiting for more data');
+            if (debug.enabled) {
+                debug(`got: ${this.buffer.length}`);
+                debug(`need: ${this.cursor + dataSize}`);
+                debug('waiting for more data');
+            }
 
             return false;
         }
@@ -254,7 +276,9 @@ export default class EbmlDecoder extends Transform {
             this.tagStack.pop();
         }
 
-        debug(`read data: ${data.toString('hex')}`);
+        if (debug.enabled) {
+            debug(`read data: ${data.toString('hex')}`);
+        }
 
         return true;
     }
