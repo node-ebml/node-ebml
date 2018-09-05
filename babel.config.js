@@ -26,9 +26,5 @@ module.exports = api => {
         ],
         '@babel/flow',
     ];
-    return {
-        ...ignores,
-        plugins,
-        presets,
-    };
+    return Object.assign({}, ignores, { plugins, presets });
 };
