@@ -6,10 +6,22 @@ test/
 __test__/
 
 # more development files
+
+*.config.js
+*.tgz
+.atom/
+.editorconfig
+.env
+.env.example
+.eslintignore
+.eslintrc.js
 .flowconfig
-flow-typed/npm/
+.nyc_output/
+.prettierrc
+.travis.yml
+coverage/
+flow-typed/
+media/*
 tmp/
 yarn.lock
-.atom/
-coverage/
-.nyc_output/
+!media/test.webm
