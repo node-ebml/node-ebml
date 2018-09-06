@@ -23,7 +23,7 @@ export default class Tools {
         if (value >= 2 ** 8 && buffer[start + 7] > 0) {
           return {
             length,
-            value: -1
+            value: -1,
           };
         }
       }
@@ -33,7 +33,7 @@ export default class Tools {
 
     return {
       length,
-      value
+      value,
     };
   }
 
@@ -95,7 +95,7 @@ export default class Tools {
   static readHexString(buff, start = 0, end = buff.byteLength) {
     return Array.from(buff.slice(start, end))
       .map(q => Number(q).toString(16))
-      .reduce((acc, current) => `${acc}${current.padStart(2, "0")}`, "");
+      .reduce((acc, current) => `${acc}${current.padStart(2, '0')}`, '');
   }
 
   /**
@@ -105,7 +105,7 @@ export default class Tools {
    */
   static readUtf8(buff) {
     try {
-      return Buffer.from(buff).toString("utf8");
+      return Buffer.from(buff).toString('utf8');
     } catch (exception) {
       return null;
     }
@@ -189,33 +189,33 @@ export default class Tools {
     let value;
 
     switch (type) {
-      case "u":
+      case 'u':
         value = Tools.readUnsigned(data);
         break;
-      case "f":
+      case 'f':
         value = Tools.readFloat(data);
         break;
-      case "i":
+      case 'i':
         value = Tools.readSigned(data);
         break;
-      case "s":
+      case 's':
         value = String.fromCharCode(...data);
         break;
-      case "8":
+      case '8':
         value = Tools.readUtf8(data);
         break;
       default:
         break;
     }
 
-    if (name === "SimpleBlock" || name === "Block") {
+    if (name === 'SimpleBlock' || name === 'Block') {
       let p = 0;
       const { length, value: trak } = Tools.readVint(data, p);
       p += length;
       track = trak;
       value = Tools.readSigned(data.subarray(p, p + 2));
       p += 2;
-      if (name === "SimpleBlock") {
+      if (name === 'SimpleBlock') {
         keyframe = Boolean(data[length + 2] & 0x80);
         discardable = Boolean(data[length + 2] & 0x01);
       }
@@ -230,7 +230,7 @@ export default class Tools {
       keyframe,
       payload,
       track,
-      value
+      value,
     };
   }
 }

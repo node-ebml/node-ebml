@@ -1,13 +1,13 @@
-import { Transform } from "stream";
-import Buffers from "buffers";
-import schema from "./schema";
-import tools from "./tools";
+import { Transform } from 'stream';
+import Buffers from 'buffers';
+import schema from './schema';
+import tools from './tools';
 
-const debug = require("debug")("ebml:encoder");
+const debug = require('debug')('ebml:encoder');
 
 function encodeTag(tagId, tagData, end) {
   if (end === -1) {
-    return Buffers([tagId, Buffer.from("01ffffffffffffff", "hex"), tagData]);
+    return Buffers([tagId, Buffer.from('01ffffffffffffff', 'hex'), tagData]);
   }
   return Buffers([tagId, tools.writeVint(tagData.length), tagData]);
 }
@@ -80,13 +80,13 @@ export default class EbmlEncoder extends Transform {
     }
 
     switch (tag) {
-      case "start":
+      case 'start':
         this.startTag(name, { name, data, ...rest });
         break;
-      case "tag":
+      case 'tag':
         this.writeTag(name, data);
         break;
-      case "end":
+      case 'end':
         this.endTag();
         break;
       default:
@@ -103,7 +103,7 @@ export default class EbmlEncoder extends Transform {
   flush(done = () => {}) {
     if (!this.buffer || this.corked) {
       if (debug.enabled) {
-        debug("no buffer/nothing pending");
+        debug('no buffer/nothing pending');
       }
       done();
 
@@ -151,7 +151,7 @@ export default class EbmlEncoder extends Transform {
    */
   static getSchemaInfo(tagName) {
     const tagId = Array.from(schema.keys()).find(
-      str => schema.get(str).name === tagName
+      str => schema.get(str).name === tagName,
     );
     if (tagId) {
       return tagId;
@@ -200,7 +200,7 @@ export default class EbmlEncoder extends Transform {
       id: tagId,
       name: tagName,
       end,
-      children: []
+      children: [],
     };
 
     if (this.stack.length > 0) {
