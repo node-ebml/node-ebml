@@ -2,7 +2,7 @@
 /* eslint-disable flowtype/space-after-type-colon */
 export type EBMLSchema = {
   name: string,
-  type: 'm' | 'u' | 'i' | 'f' | 's' | '8' | 'd' | 'b' | null,
+  type: "m" | "u" | "i" | "f" | "s" | "8" | "d" | "b" | null,
   description: string,
   level: number,
   mandatory: boolean,
@@ -19,10 +19,10 @@ export type EBMLSchema = {
   bytesize?: number,
   cppname?: string,
   default?: number | string,
-  del?: ['1 - bzlib,', '2 - lzo1x'] | '1 - bzlib,' | '2 - lzo1x',
+  del?: ["1 - bzlib,", "2 - lzo1x"] | "1 - bzlib," | "2 - lzo1x",
   divx?: boolean,
   i?: string,
   maxver?: number,
   recursive?: boolean,
-  strong?: 'informational' | 'Informational',
+  strong?: "informational" | "Informational"
 };
