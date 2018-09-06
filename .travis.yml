@@ -1,15 +1,15 @@
 language: node_js
 sudo: false
 install:
-  - npm install
   - npm install -g codecov
+  - yarn install --pure-lockfile
 node_js:
   - "node"
   - "lts/*"
   - "6"
 
 script:
-  - npm run lint
-  - npm test
+  - yarn lint
+  - yarn test
 after_success:
   - codecov
