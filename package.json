@@ -35,7 +35,7 @@
   ],
   "dependencies": {
     "buffers": "^0.1.1",
-    "debug": "~3.1.0"
+    "debug": "~3.2.1"
   },
   "devDependencies": {
     "@babel/core": "~7.0.0",
