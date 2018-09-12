@@ -25,3 +25,4 @@ media/*
 tmp/
 yarn.lock
 !media/test.webm
+.yarnclean
