@@ -1,5 +1,9 @@
-import assert from 'assert';
+import unexpected from 'unexpected';
+import unexpectedDate from 'unexpected-date';
+
 import Decoder from './decoder';
+
+const expect = unexpected.clone().use(unexpectedDate);
 
 const STATE_TAG = 1;
 const STATE_SIZE = 2;
@@ -11,18 +15,18 @@ describe('EBML', () => {
       const decoder = new Decoder();
       decoder.write(Buffer.from([0x1a, 0x45]));
 
-      assert.strictEqual(STATE_TAG, decoder.state);
-      assert.strictEqual(2, decoder.buffer.length);
-      assert.strictEqual(0, decoder.cursor);
+      expect(decoder.state, 'to be', STATE_TAG);
+      expect(decoder.buffer.length, 'to be', 2);
+      expect(decoder.cursor, 'to be', 0);
     });
 
     it('should clear the buffer after a full tag is written in one chunk', () => {
       const decoder = new Decoder();
       decoder.write(Buffer.from([0x42, 0x86, 0x81, 0x01]));
 
-      assert.strictEqual(STATE_TAG, decoder.state);
-      assert.strictEqual(0, decoder.buffer.length);
-      assert.strictEqual(0, decoder.cursor);
+      expect(decoder.state, 'to be', STATE_TAG);
+      expect(decoder.buffer.length, 'to be', 0);
+      expect(decoder.cursor, 'to be', 0);
     });
 
     it('should clear the buffer after a full tag is written in multiple chunks', () => {
@@ -31,9 +35,9 @@ describe('EBML', () => {
       decoder.write(Buffer.from([0x42, 0x86]));
       decoder.write(Buffer.from([0x81, 0x01]));
 
-      assert.strictEqual(STATE_TAG, decoder.state);
-      assert.strictEqual(0, decoder.buffer.length);
-      assert.strictEqual(0, decoder.cursor);
+      expect(decoder.state, 'to be', STATE_TAG);
+      expect(decoder.buffer.length, 'to be', 0);
+      expect(decoder.cursor, 'to be', 0);
     });
 
     it('should increment the cursor on each step', () => {
@@ -41,38 +45,38 @@ describe('EBML', () => {
 
       decoder.write(Buffer.from([0x42])); // 4
 
-      assert.strictEqual(STATE_TAG, decoder.state);
-      assert.strictEqual(1, decoder.buffer.length);
-      assert.strictEqual(0, decoder.cursor);
+      expect(decoder.state, 'to be', STATE_TAG);
+      expect(decoder.buffer.length, 'to be', 1);
+      expect(decoder.cursor, 'to be', 0);
 
       decoder.write(Buffer.from([0x86])); // 5
 
-      assert.strictEqual(STATE_SIZE, decoder.state);
-      assert.strictEqual(2, decoder.buffer.length);
-      assert.strictEqual(2, decoder.cursor);
+      expect(decoder.state, 'to be', STATE_SIZE);
+      expect(decoder.buffer.length, 'to be', 2);
+      expect(decoder.cursor, 'to be', 2);
 
       decoder.write(Buffer.from([0x81])); // 6 & 7
 
-      assert.strictEqual(STATE_CONTENT, decoder.state);
-      assert.strictEqual(3, decoder.buffer.length);
-      assert.strictEqual(3, decoder.cursor);
+      expect(decoder.state, 'to be', STATE_CONTENT);
+      expect(decoder.buffer.length, 'to be', 3);
+      expect(decoder.cursor, 'to be', 3);
 
       decoder.write(Buffer.from([0x01])); // 6 & 7
 
-      assert.strictEqual(STATE_TAG, decoder.state);
-      assert.strictEqual(0, decoder.buffer.length);
-      assert.strictEqual(0, decoder.cursor);
+      expect(decoder.state, 'to be', STATE_TAG);
+      expect(decoder.buffer.length, 'to be', 0);
+      expect(decoder.cursor, 'to be', 0);
     });
 
     it('should emit correct tag events for simple data', done => {
       const decoder = new Decoder();
       decoder.on('data', ([state, { dataSize, tag, type, tagStr, data }]) => {
-        assert.strictEqual(state, 'tag');
-        assert.strictEqual(tag, 0x286);
-        assert.strictEqual(tagStr, '4286');
-        assert.strictEqual(dataSize, 0x01);
-        assert.strictEqual(type, 'u');
-        assert.deepStrictEqual(data, Buffer.from([0x01]));
+        expect(state, 'to be', 'tag');
+        expect(tag, 'to be', 0x286);
+        expect(tagStr, 'to be', '4286');
+        expect(dataSize, 'to be', 0x01);
+        expect(type, 'to be', 'u');
+        expect(data, 'to equal', Buffer.from([0x01]));
         done();
         decoder.on('finish', done);
       });
@@ -85,12 +89,12 @@ describe('EBML', () => {
       const decoder = new Decoder();
 
       decoder.on('data', ([state, { dataSize, tag, type, tagStr, data }]) => {
-        assert.strictEqual(state, 'start');
-        assert.strictEqual(tag, 0x0a45dfa3);
-        assert.strictEqual(tagStr, '1a45dfa3');
-        assert.strictEqual(dataSize, 0);
-        assert.strictEqual(type, 'm');
-        assert.strictEqual(data, undefined); // eslint-disable-line no-undefined
+        expect(state, 'to be', 'start');
+        expect(tag, 'to be', 0x0a45dfa3);
+        expect(tagStr, 'to be', '1a45dfa3');
+        expect(dataSize, 'to be', 0);
+        expect(type, 'to be', 'm');
+        expect(data, 'to be undefined'); // eslint-disable-line no-undefined
         done();
         decoder.on('finish', done);
       });
@@ -106,12 +110,12 @@ describe('EBML', () => {
       decoder.on('data', d => {
         const [state, data] = d;
         if (state === 'end') {
-          assert.strictEqual(tags, 2); // two tags
-          assert.strictEqual(data.tag, 0x0a45dfa3);
-          assert.strictEqual(data.tagStr, '1a45dfa3');
-          assert.strictEqual(data.dataSize, 4);
-          assert.strictEqual(data.type, 'm');
-          assert.strictEqual(data.data, undefined); // eslint-disable-line no-undefined
+          expect(tags, 'to be', 2); // two tags
+          expect(data.tag, 'to be', 0x0a45dfa3);
+          expect(data.tagStr, 'to be', '1a45dfa3');
+          expect(data.dataSize, 'to be', 4);
+          expect(data.type, 'to be', 'm');
+          expect(data.data, 'to be undefined'); // eslint-disable-line no-undefined
           done();
           decoder.on('finish', done);
         } else {
@@ -126,7 +130,7 @@ describe('EBML', () => {
     });
     describe('::getSchemaInfo', () => {
       it('returns a correct tag if possible', () => {
-        assert.ok(Decoder.getSchemaInfo(0x4286), {
+        expect(Decoder.getSchemaInfo(0x4286), 'to satisfy', {
           name: 'EBMLVersion',
           level: 1,
           type: 'u',
@@ -139,14 +143,14 @@ describe('EBML', () => {
         });
       });
       it('returns a default object if not found', () => {
-        assert.ok(Decoder.getSchemaInfo(0x404), {
-          type: null,
-          name: 'unknown',
-          description: '',
-          level: -1,
-          minver: -1,
-          multiple: false,
-          webm: false,
+        expect(Decoder.getSchemaInfo(0x404), 'to satisfy', {
+          type: expect.it('to be null'),
+          name: expect.it('to be a string').and('to be', 'unknown'),
+          description: expect.it('to be a string').and('to be empty'),
+          level: expect.it('to be a number').and('not to be positive'),
+          minver: expect.it('to be a number').and('not to be positive'),
+          multiple: expect.it('to be a boolean'),
+          webm: expect.it('to be a boolean'),
         });
       });
     });
