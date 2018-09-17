@@ -27,7 +27,7 @@ const plugins = [
   json(),
 ];
 
-const sourcemap = true;
+const sourcemap = process.env.SOURCE_MAPS || true;
 
 export default [
   {
@@ -70,32 +70,27 @@ export default [
       {
         file: 'lib/ebml.min.js',
         format: 'cjs',
-        sourcemap,
       },
       {
         file: 'lib/ebml.esm.min.js',
         format: 'esm',
-        sourcemap,
       },
       {
         file: 'lib/ebml.iife.min.js',
         format: 'iife',
         name: 'EBML',
-        sourcemap,
       },
       {
         file: 'lib/ebml.amd.min.js',
         format: 'amd',
         name: 'EBML',
-        sourcemap,
       },
       {
         file: 'lib/ebml.umd.min.js',
         format: 'umd',
         name: 'EBML',
-        sourcemap,
       },
     ],
-    plugins: [...plugins, terser()],
+    plugins: [...plugins, terser({ sourcemap })],
   },
 ];
