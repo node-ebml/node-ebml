@@ -9,7 +9,7 @@ docs
 doc
 website
 images
-assets
+# assets # disabled for `istanbul-reporter`
 
 # examples
 # example
