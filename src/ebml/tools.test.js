@@ -26,19 +26,20 @@ describe('EBML', () => {
         expect(vint.length, 'to be', 1);
       });
       it('should read the correct value for all 2 byte integers', () => {
-        for (let i = 0; i < 0x40; i += 1)
-          for (let j = 0; j < 0xff; j += 1) {
+        forEach(range(0x40), i =>
+          forEach(range(0xff), j => {
             readVint(Buffer.from([i | 0x40, j]), (i << 8) + j);
-          }
+          }),
+        );
       });
       it('should read the correct value for all 3 byte integers', () => {
-        for (let i = 0; i < 0x20; i += 1) {
-          for (let j = 0; j < 0xff; j += 2) {
-            for (let k = 0; k < 0xff; k += 3) {
+        forEach(range(0, 0x20, 1), i =>
+          forEach(range(0, 0xff, 2), j =>
+            forEach(range(0, 0xff, 3), k => {
               readVint(Buffer.from([i | 0x20, j, k]), (i << 16) + (j << 8) + k);
-            }
-          }
-        }
+            }),
+          ),
+        );
       });
       // not brute forcing any more bytes, takes sooo long
       it('should read the correct value for 4 byte int min/max values', () => {
