@@ -2,6 +2,7 @@ export default class Tools {
   /**
    * read variable length integer per
    * https://www.matroska.org/technical/specs/index.html#EBML_ex
+   * @static
    * @param {Buffer} buffer containing input
    * @param {Number} [start=0] position in buffer
    * @returns {{length: Number, value: number}}  value / length object
@@ -33,6 +34,7 @@ export default class Tools {
 
   /**
    * write variable length integer
+   * @static
    * @param {Number} value to store into buffer
    * @returns {Buffer} containing the value
    */
@@ -64,6 +66,7 @@ export default class Tools {
   /**
    * *
    * concatenate two arrays of bytes
+   * @static
    * @param {Buffer} a1  First array
    * @param {Buffer} a2  Second array
    * @returns  {Buffer} concatenated arrays
@@ -169,6 +172,7 @@ export default class Tools {
 
   /**
    * get a date from a buffer
+   * @static
    * @param  {Buffer} buff from which to read the date
    * @return {Date}      result
    */

@@ -636,6 +636,76 @@ describe('EBML', () => {
         expect(tools.readSigned(Buffer.from([0x40, 0x20, 0x00])), 'to be NaN');
       });
     });
-    describe('#readDataFromTag', () => {});
+    describe('#readDataFromTag', () => {
+      it('can read a string from a tag', () => {
+        const tagData = { type: 's', name: 'DocType' };
+        const buf = Buffer.from([
+          0x6d,
+          0x61,
+          0x74,
+          0x72,
+          0x6f,
+          0x73,
+          0x6b,
+          0x61,
+        ]);
+        expect(tools.readDataFromTag(tagData, buf), 'to satisfy', {
+          type: 's',
+          name: 'DocType',
+          data: expect
+            .it('to be a', Buffer)
+            .and(
+              'to equal',
+              Buffer.from([0x6d, 0x61, 0x74, 0x72, 0x6f, 0x73, 0x6b, 0x61]),
+            ),
+          value: 'matroska',
+        });
+      });
+      it('can read an unsigned integer from a tag', () => {
+        const tagData = {
+          type: 'u',
+          name: 'TrackType',
+        };
+        const buf = Buffer.from([0x77]);
+        expect(tools.readDataFromTag(tagData, buf), 'to satisfy', {
+          type: 'u',
+          name: 'TrackType',
+          data: expect
+            .it('to be a', Buffer)
+            .and('to equal', Buffer.from([0x77])),
+          value: 119,
+        });
+      });
+      it('can read a signed integer from a tag', () => {
+        const tagData = {
+          type: 'i',
+          name: 'TrackOffset',
+        };
+        const buf = Buffer.from([0xa7]);
+        expect(tools.readDataFromTag(tagData, buf), 'to satisfy', {
+          type: 'i',
+          name: 'TrackOffset',
+          data: expect
+            .it('to be a', Buffer)
+            .and('to equal', Buffer.from([0xa7])),
+          value: -89,
+        });
+      });
+      it('can read a float from a tag', () => {
+        const tagData = {
+          type: 'f',
+          name: 'Duration',
+        };
+        const buf = Buffer.from([0x40, 0x00, 0x00, 0x77]);
+        expect(tools.readDataFromTag(tagData, buf), 'to satisfy', {
+          type: 'f',
+          name: 'Duration',
+          data: expect
+            .it('to be a', Buffer)
+            .and('to equal', Buffer.from([0x40, 0x00, 0x00, 0x77])),
+          value: expect.it('to be close to', 2.00003, 1e-5),
+        });
+      });
+    });
   });
 });
