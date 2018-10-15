@@ -21,11 +21,7 @@ describe('ebml', () => {
       ]);
 
       encoder.on('data', chunk => {
-        expect(
-          chunk.toString('hex'),
-          'to strictly equal',
-          buffer.toString('hex'),
-        );
+        expect(chunk.toString('hex'), 'to equal', buffer.toString('hex'));
         encoder.on('finish', done);
         done();
       });
