@@ -1,8 +1,10 @@
 import fs from 'fs';
-import assert from 'assert';
+import unexpected from 'unexpected';
 import { Decoder } from '../src/ebml';
 
 process.setMaxListeners(Infinity);
+
+const expect = unexpected.clone();
 
 describe('EBML', () => {
   describe('Values in tags', () => {
@@ -13,12 +15,12 @@ describe('EBML', () => {
         const decoder = new Decoder();
         decoder.on('data', ([tag, { name, value }]) => {
           if (tag === 'tag' && name === 'PixelWidth') {
-            assert.strictEqual(value, 352);
+            expect(value, 'to equal', 352);
             done();
           }
         });
         decoder.on('finish', () => {
-          assert.strictEqual(0, 1, 'hit end of file without finding tag.');
+          expect.fail('hit end of file without finding tag');
           done();
         });
         decoder.write(data);
@@ -28,11 +30,11 @@ describe('EBML', () => {
         const decoder = new Decoder();
         decoder.on('data', ([tag, { name, value }]) => {
           if (tag === 'tag' && name === 'EBMLVersion') {
-            assert.strictEqual(value, 1);
+            expect(value, 'to equal', 1);
             done();
           }
           decoder.on('finish', () => {
-            assert.strictEqual(0, 1, 'hit end of file without finding tag.');
+            expect.fail('hit end of file without finding tag');
             done();
           });
         });
@@ -43,11 +45,11 @@ describe('EBML', () => {
         const decoder = new Decoder();
         decoder.on('data', ([tag, { name, value }]) => {
           if (tag === 'tag' && name === 'TimecodeScale') {
-            assert.strictEqual(value, 1000000);
+            expect(value, 'to equal', 1000000);
             done();
           }
           decoder.on('finish', () => {
-            assert.strictEqual(0, 1, 'hit end of file without finding tag.');
+            expect.fail('hit end of file without finding tag');
             done();
           });
         });
@@ -58,12 +60,12 @@ describe('EBML', () => {
         const decoder = new Decoder();
         decoder.on('data', ([tag, { name, value }]) => {
           if (tag === 'tag' && name === 'TrackUID') {
-            assert.strictEqual(value, '1c63824e507a46');
+            expect(value, 'to be', '1c63824e507a46');
             done();
           }
         });
         decoder.on('finish', () => {
-          assert.strictEqual(0, 1, 'hit end of file without finding tag.');
+          expect.fail('hit end of file without finding tag');
           done();
         });
         decoder.write(data);
@@ -73,11 +75,11 @@ describe('EBML', () => {
         const decoder = new Decoder();
         decoder.on('data', ([tag, { name, value }]) => {
           if (tag === 'tag' && name === 'DocType') {
-            assert.strictEqual(value, 'matroska');
+            expect(value, 'to be', 'matroska');
             done();
           }
           decoder.on('finish', () => {
-            assert.strictEqual(0, 1, 'hit end of file without finding tag.');
+            expect.fail('hit end of file without finding tag');
             done();
           });
         });
@@ -88,11 +90,11 @@ describe('EBML', () => {
         const decoder = new Decoder();
         decoder.on('data', ([tag, { name, ...rest }]) => {
           if (tag === 'tag' && name === 'MuxingApp') {
-            assert.strictEqual(rest.value, 'Chrome', JSON.stringify(rest));
+            expect(rest.value, 'to be', 'Chrome');
             done();
           }
           decoder.on('finish', () => {
-            assert.strictEqual(0, 1, 'hit end of file without finding tag.');
+            expect.fail('hit end of file without finding tag');
             done();
           });
         });
@@ -105,19 +107,15 @@ describe('EBML', () => {
           if (tag === 'tag' && name === 'SimpleBlock') {
             if (value > 0 && value < 200) {
               /* look at second simpleBlock */
-              assert.strictEqual(track, 1, 'track');
-              assert.strictEqual(value, 191, 'value (timestamp)');
-              assert.strictEqual(
-                payload.byteLength,
-                169,
-                JSON.stringify(payload),
-              );
+              expect(track, 'to equal', 1);
+              expect(value, 'to equal', 191);
+              expect(payload.byteLength, 'to equal', 169);
               done();
             }
           }
         });
         decoder.on('finish', () => {
-          assert.strictEqual(0, 1, 'hit end of file without finding tag.');
+          expect.fail('hit end of file without finding tag');
           done();
         });
         decoder.write(data);
@@ -131,12 +129,12 @@ describe('EBML', () => {
         const decoder = new Decoder();
         decoder.on('data', ([tag, { name, value }]) => {
           if (tag === 'tag' && name === 'PixelWidth') {
-            assert.strictEqual(value, 352);
+            expect(value, 'to equal', 352);
             done();
           }
         });
         decoder.on('finish', () => {
-          assert.strictEqual(0, 1, 'hit end of file without finding tag.');
+          expect.fail('hit end of file without finding tag');
           done();
         });
         decoder.write(data);
@@ -146,12 +144,12 @@ describe('EBML', () => {
         const decoder = new Decoder();
         decoder.on('data', ([tag, { name, value }]) => {
           if (tag === 'tag' && name === 'EBMLVersion') {
-            assert.strictEqual(value, 1);
+            expect(value, 'to equal', 1);
             done();
           }
         });
         decoder.on('finish', () => {
-          assert.strictEqual(0, 1, 'hit end of file without finding tag.');
+          expect.fail('hit end of file without finding tag');
           done();
         });
         decoder.write(data);
@@ -161,12 +159,12 @@ describe('EBML', () => {
         const decoder = new Decoder();
         decoder.on('data', ([tag, { name, value }]) => {
           if (tag === 'tag' && name === 'TimecodeScale') {
-            assert.strictEqual(value, 1000000);
+            expect(value, 'to equal', 1000000);
             done();
           }
         });
         decoder.on('finish', () => {
-          assert.strictEqual(0, 1, 'hit end of file without finding tag.');
+          expect.fail('hit end of file without finding tag');
           done();
         });
         decoder.write(data);
@@ -176,11 +174,11 @@ describe('EBML', () => {
         const decoder = new Decoder();
         decoder.on('data', ([tag, { name, value }]) => {
           if (tag === 'tag' && name === 'TrackUID') {
-            assert.strictEqual(value, '306d02aaa74d06');
+            expect(value, 'to be', '306d02aaa74d06');
             done();
           }
           decoder.on('finish', () => {
-            assert.strictEqual(0, 1, 'hit end of file without finding tag.');
+            expect.fail('hit end of file without finding tag');
             done();
           });
         });
@@ -191,12 +189,12 @@ describe('EBML', () => {
         const decoder = new Decoder();
         decoder.on('data', ([tag, { name, value }]) => {
           if (tag === 'tag' && name === 'DocType') {
-            assert.strictEqual(value, 'webm');
+            expect(value, 'to be', 'webm');
             done();
           }
         });
         decoder.on('finish', () => {
-          assert.strictEqual(0, 1, 'hit end of file without finding tag.');
+          expect.fail('hit end of file without finding tag');
           done();
         });
         decoder.write(data);
@@ -206,13 +204,13 @@ describe('EBML', () => {
         const decoder = new Decoder();
         decoder.on('data', ([tag, { name, value }]) => {
           if (tag === 'tag' && name === 'MuxingApp') {
-            assert.strictEqual(value, 'Chrome');
+            expect(value, 'to be', 'Chrome');
             done();
           }
         });
         decoder.write(data);
         decoder.on('finish', () => {
-          assert.strictEqual(0, 1, 'hit end of file without finding tag.');
+          expect.fail('hit end of file without finding tag');
           done();
         });
       });
@@ -221,29 +219,21 @@ describe('EBML', () => {
         const decoder = new Decoder();
         decoder.on(
           'data',
-          ([tag, { name, payload, value, track, discardable, ...rest }]) => {
+          ([tag, { name, payload, value, track, discardable }]) => {
             if (tag === 'tag' && name === 'SimpleBlock') {
               if (value > 0 && value < 100) {
-                assert.strictEqual(track, 1, 'track');
-                assert.strictEqual(
-                  value,
-                  96,
-                  JSON.stringify({ ...rest, value }),
-                );
+                expect(track, 'to equal', 1);
+                expect(value, 'to equal', 96);
                 /* look at second simpleBlock */
-                assert.strictEqual(
-                  payload.byteLength,
-                  43,
-                  JSON.stringify({ ...rest, payload }),
-                );
-                assert.strictEqual(discardable, false, 'discardable');
+                expect(payload.byteLength, 'to equal', 43);
+                expect(discardable, 'to be false');
                 done();
               }
             }
           },
         );
         decoder.on('finish', () => {
-          assert.strictEqual(0, 1, 'hit end of file without finding tag.');
+          expect.fail('hit end of file without finding tag');
           done();
         });
         decoder.write(data);
