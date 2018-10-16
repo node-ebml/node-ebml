@@ -78,10 +78,13 @@
     "rollup-plugin-node-resolve": "^3.3.0",
     "rollup-plugin-replace": "^2.0.0",
     "rollup-plugin-terser": "2.0.2",
+    "sinon": "^6.3.5",
+    "stream-mock": "^1.2.0",
     "unexpected": "^10.39.0",
     "unexpected-date": "^1.2.1",
     "unexpected-eventemitter": "^1.0.1",
-    "unexpected-jest-snapshot": "^0.1.0"
+    "unexpected-jest-snapshot": "^0.1.0",
+    "unexpected-sinon": "^10.10.1"
   },
   "contributors": [
     "Chris Price <price.c@gmail.com>",

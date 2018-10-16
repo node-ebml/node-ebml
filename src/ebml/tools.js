@@ -72,6 +72,10 @@ export default class Tools {
    * @returns  {Buffer} concatenated arrays
    */
   static concatenate(a1, a2) {
+    // both null or undefined
+    if (!a1 && !a2) {
+      return Buffer.from([]);
+    }
     if (!a1 || a1.byteLength === 0) {
       return a2;
     }
