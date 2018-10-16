@@ -1,5 +1,4 @@
 import { Transform } from 'stream';
-import Buffers from 'buffers';
 import schema from './schema';
 import tools from './tools';
 
@@ -81,7 +80,7 @@ export default class EbmlEncoder extends Transform {
 
     switch (tag) {
       case 'start':
-        this.startTag(name, { name, data, ...rest });
+        this.startTag(name, { ...rest });
         break;
       case 'tag':
         this.writeTag(name, data);
@@ -211,11 +210,12 @@ export default class EbmlEncoder extends Transform {
   }
 
   endTag() {
-    const tag = this.stack.pop();
-
+    const tag = this.stack.pop() || {
+      children: [],
+      data: { buffer: Buffer.from([]) },
+    };
     const childTagDataBuffers = tag.children.map(child => child.data);
-    tag.data = encodeTag(tag.id, Buffers(childTagDataBuffers), tag.end);
-
+    tag.data = encodeTag(tag.id, Array.from(childTagDataBuffers), tag.end);
     if (this.stack.length < 1) {
       this.bufferAndFlush(tag.data.buffer);
     }
