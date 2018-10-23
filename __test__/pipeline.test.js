@@ -1,5 +1,7 @@
-import assert from 'assert';
+import unexpected from 'unexpected';
 import { Decoder, Encoder } from '../src/ebml';
+
+const expect = unexpected.clone();
 
 describe('ebml', () => {
   describe('Pipeline', () => {
@@ -19,7 +21,7 @@ describe('ebml', () => {
       ]);
 
       encoder.on('data', chunk => {
-        assert.strictEqual(chunk.toString('hex'), buffer.toString('hex'));
+        expect(chunk.toString('hex'), 'to equal', buffer.toString('hex'));
         encoder.on('finish', done);
         done();
       });
@@ -51,9 +53,9 @@ describe('ebml', () => {
       ]);
 
       encoder.pipe(decoder).on('data', data => {
-        assert.strictEqual(data[1].name, 'Cluster');
-        assert.strictEqual(data[1].start, 0);
-        assert.strictEqual(data[1].end, -1);
+        expect(data[1].name, 'to be', 'Cluster');
+        expect(data[1].start, 'to be', 0);
+        expect(data[1].end, 'to be', -1);
         done();
       });
       encoder.pipe(decoder).on('finish', done);

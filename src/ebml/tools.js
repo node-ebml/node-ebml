@@ -2,6 +2,7 @@ export default class Tools {
   /**
    * read variable length integer per
    * https://www.matroska.org/technical/specs/index.html#EBML_ex
+   * @static
    * @param {Buffer} buffer containing input
    * @param {Number} [start=0] position in buffer
    * @returns {{length: Number, value: number}}  value / length object
@@ -21,24 +22,19 @@ export default class Tools {
     for (let i = 1; i < length; i += 1) {
       if (i === 7) {
         if (value >= 2 ** 8 && buffer[start + 7] > 0) {
-          return {
-            length,
-            value: -1,
-          };
+          return { length, value: -1 };
         }
       }
       value *= 2 ** 8;
       value += buffer[start + i];
     }
 
-    return {
-      length,
-      value,
-    };
+    return { length, value };
   }
 
   /**
    * write variable length integer
+   * @static
    * @param {Number} value to store into buffer
    * @returns {Buffer} containing the value
    */
@@ -70,11 +66,16 @@ export default class Tools {
   /**
    * *
    * concatenate two arrays of bytes
+   * @static
    * @param {Buffer} a1  First array
    * @param {Buffer} a2  Second array
    * @returns  {Buffer} concatenated arrays
    */
   static concatenate(a1, a2) {
+    // both null or undefined
+    if (!a1 && !a2) {
+      return Buffer.from([]);
+    }
     if (!a1 || a1.byteLength === 0) {
       return a2;
     }
@@ -170,6 +171,28 @@ export default class Tools {
         return b.getFloat64(0);
       default:
         return NaN;
+    }
+  }
+
+  /**
+   * get a date from a buffer
+   * @static
+   * @param  {Buffer} buff from which to read the date
+   * @return {Date}      result
+   */
+  static readDate(buff) {
+    const b = new DataView(buff.buffer, buff.byteOffset, buff.byteLength);
+    switch (buff.byteLength) {
+      case 1:
+        return new Date(b.getUint8(0));
+      case 2:
+        return new Date(b.getUint16(0));
+      case 4:
+        return new Date(b.getUint32(0));
+      case 8:
+        return new Date(Number.parseInt(Tools.readHexString(buff), 16));
+      default:
+        return new Date(0);
     }
   }
 
