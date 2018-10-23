@@ -2,7 +2,10 @@ language: node_js
 sudo: false
 install:
   - npm install -g codecov
-  - yarn install --pure-lockfile
+  - yarn install
+cache:
+  directories:
+    - node_modules
 node_js:
   - "node"
   - "lts/*"
