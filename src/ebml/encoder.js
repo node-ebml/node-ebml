@@ -74,6 +74,7 @@ export default class EbmlEncoder extends Transform {
    */
   _transform(chunk, enc, done) {
     const [tag, { data, name, ...rest }] = chunk;
+    /* istanbul ignore if */
     if (debug.enabled) {
       debug(`encode ${tag} ${name}`);
     }
@@ -101,6 +102,7 @@ export default class EbmlEncoder extends Transform {
    */
   flush(done = () => {}) {
     if (!this.buffer || this.corked) {
+      /* istanbul ignore if */
       if (debug.enabled) {
         debug('no buffer/nothing pending');
       }
@@ -108,17 +110,17 @@ export default class EbmlEncoder extends Transform {
     }
 
     if (this.buffer.byteLength === 0) {
+      /* istanbul ignore if */
       if (debug.enabled) {
         debug('empty buffer');
       }
       return done();
     }
 
+    /* istanbul ignore if */
     if (debug.enabled) {
       debug(`writing ${this.buffer.length} bytes`);
     }
-
-    // console.info(`this.buffer.toBuffer = ${this.buffer.buffer}`);
 
     const chunk = Buffer.from(this.buffer);
     this.buffer = null;

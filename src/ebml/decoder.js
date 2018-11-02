@@ -129,11 +129,13 @@ export default class EbmlDecoder extends Transform {
   }
 
   readTag() {
+    /* istanbul ignore if */
     if (debug.enabled) {
       debug('parsing tag');
     }
 
     if (this.cursor >= this.buffer.length) {
+      /* istanbul ignore if */
       if (debug.enabled) {
         debug('waiting for more data');
       }
@@ -144,6 +146,7 @@ export default class EbmlDecoder extends Transform {
     const tag = tools.readVint(this.buffer, this.cursor);
 
     if (tag == null) {
+      /* istanbul ignore if */
       if (debug.enabled) {
         debug('waiting for more data');
       }
@@ -171,6 +174,7 @@ export default class EbmlDecoder extends Transform {
     };
 
     this.tagStack.push(tagObj);
+    /* istanbul ignore if */
     if (debug.enabled) {
       debug(`read tag: ${tagStr}`);
     }
@@ -181,11 +185,13 @@ export default class EbmlDecoder extends Transform {
   readSize() {
     const tagObj = this.tagStack[this.tagStack.length - 1];
 
+    /* istanbul ignore if */
     if (debug.enabled) {
       debug(`parsing size for tag: ${tagObj.tagStr}`);
     }
 
     if (this.cursor >= this.buffer.length) {
+      /* istanbul ignore if */
       if (debug.enabled) {
         debug('waiting for more data');
       }
@@ -196,6 +202,7 @@ export default class EbmlDecoder extends Transform {
     const size = tools.readVint(this.buffer, this.cursor);
 
     if (size == null) {
+      /* istanbul ignore if */
       if (debug.enabled) {
         debug('waiting for more data');
       }
@@ -214,7 +221,7 @@ export default class EbmlDecoder extends Transform {
     } else {
       tagObj.end += size.value + size.length;
     }
-
+    /* istanbul ignore if */
     if (debug.enabled) {
       debug(`read size: ${size.value}`);
     }
@@ -227,11 +234,13 @@ export default class EbmlDecoder extends Transform {
       this.tagStack.length - 1
     ];
 
+    /* istanbul ignore if */
     if (debug.enabled) {
       debug(`parsing content for tag: ${tagStr}`);
     }
 
     if (type === 'm') {
+      /* istanbul ignore if */
       if (debug.enabled) {
         debug('content should be tags');
       }
@@ -242,6 +251,7 @@ export default class EbmlDecoder extends Transform {
     }
 
     if (this.buffer.length < this.cursor + dataSize) {
+      /* istanbul ignore if */
       if (debug.enabled) {
         debug(`got: ${this.buffer.length}`);
         debug(`need: ${this.cursor + dataSize}`);
@@ -276,6 +286,7 @@ export default class EbmlDecoder extends Transform {
       this.tagStack.pop();
     }
 
+    /* istanbul ignore if */
     if (debug.enabled) {
       debug(`read data: ${data.toString('hex')}`);
     }

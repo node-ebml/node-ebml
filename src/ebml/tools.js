@@ -227,6 +227,9 @@ export default class Tools {
       case '8':
         value = Tools.readUtf8(data);
         break;
+      case 'd':
+        value = Tools.readDate(data);
+        break;
       default:
         break;
     }

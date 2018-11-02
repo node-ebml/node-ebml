@@ -5,6 +5,7 @@ import Encoder from './encoder';
 
 const expect = unexpected.clone().use(unexpectedDate);
 
+jest.dontMock('debug');
 describe('EBML', () => {
   describe('Encoder', () => {
     function createEncoder(expected, done) {
@@ -141,6 +142,34 @@ describe('EBML', () => {
           },
           'to throw',
           /No schema entry found/,
+        );
+      });
+      it('creates a valid tag when presented', () => {
+        encoder.startTag('ChapterTrackNumber', { end: -1 });
+        expect(encoder.stack, 'not to be empty')
+          .and('to have length', 1)
+          .and('to satisfy', [
+            {
+              data: expect.it('to be null'),
+              id: expect.it('to equal', 0x89),
+              name: expect.it('to equal', 'ChapterTrackNumber'),
+              children: expect.it('to be an array').and('to be empty'),
+            },
+          ]);
+      });
+      it('creates a valid tag when presented with a stack already present', () => {
+        encoder.stack = [
+          {
+            data: 1,
+            id: 0x89,
+            name: 'ChapterTrackNumber',
+            children: [],
+          },
+        ];
+        encoder.startTag('ChapterTimeStart', { end: 0x80 });
+        expect(encoder.stack[0].children, 'not to be empty').and(
+          'to have length',
+          1,
         );
       });
     });

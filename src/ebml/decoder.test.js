@@ -94,7 +94,7 @@ describe('EBML', () => {
         expect(tagStr, 'to be', '1a45dfa3');
         expect(dataSize, 'to be', 0);
         expect(type, 'to be', 'm');
-        expect(data, 'to be undefined'); // eslint-disable-line no-undefined
+        expect(data, 'to be undefined');
         done();
         decoder.on('finish', done);
       });
@@ -115,7 +115,7 @@ describe('EBML', () => {
           expect(data.tagStr, 'to be', '1a45dfa3');
           expect(data.dataSize, 'to be', 4);
           expect(data.type, 'to be', 'm');
-          expect(data.data, 'to be undefined'); // eslint-disable-line no-undefined
+          expect(data.data, 'to be undefined');
           done();
           decoder.on('finish', done);
         } else {

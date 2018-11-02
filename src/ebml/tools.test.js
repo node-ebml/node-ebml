@@ -707,5 +707,32 @@ describe('EBML', () => {
         });
       });
     });
+    describe('#readDate', () => {
+      it('handles 8-bit integers', () => {
+        expect(tools.readDate(Buffer.from([0x07])), 'to equal', new Date(7));
+      });
+      it('handles 16-bit integers', () => {
+        expect(
+          tools.readDate(Buffer.from([0x07, 0x07])),
+          'to equal',
+          new Date(1799),
+        );
+      });
+      it('handles 32-bit integers', () => {
+        expect(
+          tools.readDate(Buffer.from([0x07, 0x07, 0x07, 0x07])),
+          'to equal',
+          new Date(117901063),
+        );
+      });
+      it('returns now with invalid sized arrays', () => {
+        expect(
+          tools.readDate(Buffer.from([0x40, 0x20, 0x00])),
+          'to be close to',
+          new Date(0),
+          2000,
+        );
+      });
+    });
   });
 });
