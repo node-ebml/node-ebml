@@ -3354,9 +3354,10 @@ jest-haste-map@^23.6.0:
     micromatch "^2.3.11"
     sane "^2.0.0"
 
-jest-html-reporter@^2.4.2:
-  version "2.4.2"
-  resolved "https://registry.yarnpkg.com/jest-html-reporter/-/jest-html-reporter-2.4.2.tgz#3ad8da971ec4bc3207612d1e467917f7fc3fffc1"
+jest-html-reporter@^2.4.3:
+  version "2.4.3"
+  resolved "https://registry.yarnpkg.com/jest-html-reporter/-/jest-html-reporter-2.4.3.tgz#78c2b175850fc2702f4fea021f857cced3095fce"
+  integrity sha512-GBqCn03dNqpMnlHPwi8HH2bF8FKFCcWKb4GnQsGZGUQQxnu7dVrujwUlFB19V0Q6NU7vZnVDgTF6AWdFw4GCqw==
   dependencies:
     dateformat "3.0.2"
     mkdirp "0.5.1"
