@@ -1817,13 +1817,14 @@ detect-newline@^2.1.0:
   version "2.1.0"
   resolved "https://registry.yarnpkg.com/detect-newline/-/detect-newline-2.1.0.tgz#f41f1c10be4b00e87b5f13da680759f2c5bfd3e2"
 
-diff@1.1.0:
-  version "1.1.0"
-  resolved "https://registry.yarnpkg.com/diff/-/diff-1.1.0.tgz#798a49381aa464151e9b4f0e6ff2b09a8a1ad23f"
-
 diff@3.5.0, diff@^3.2.0, diff@^3.5.0:
   version "3.5.0"
   resolved "https://registry.yarnpkg.com/diff/-/diff-3.5.0.tgz#800c0dd1e0a8bfbc95835c202ad220fe317e5a12"
+
+diff@4.0.1:
+  version "4.0.1"
+  resolved "https://registry.yarnpkg.com/diff/-/diff-4.0.1.tgz#0c667cb467ebbb5cea7f14f135cc2dba7780a8ff"
+  integrity sha512-s2+XdvhPCOF01LRQBC8hf4vhbVmI2CGS5aZnxLJlT5FtdhPCDFq80q++zK2KlrVorVDdL5BOGZ/VfLrVtYNF+Q==
 
 diffie-hellman@^5.0.0:
   version "5.0.3"
@@ -5667,15 +5668,16 @@ unexpected-sinon@^10.10.1:
   version "10.10.1"
   resolved "https://registry.yarnpkg.com/unexpected-sinon/-/unexpected-sinon-10.10.1.tgz#af31b989d3a54743fa7a4ab127ed40adbf8db371"
 
-unexpected@^10.39.0:
-  version "10.39.1"
-  resolved "https://registry.yarnpkg.com/unexpected/-/unexpected-10.39.1.tgz#2c814ccffb3dd17cfef00a2e9e55c14beb4edb97"
+unexpected@^11.0.1:
+  version "11.0.1"
+  resolved "https://registry.yarnpkg.com/unexpected/-/unexpected-11.0.1.tgz#88e1d8fd23f8762a9afe4217d4a773fe6b05546f"
+  integrity sha512-INflDVZTLwqvHQk/g4huzEU7/AIZwkK7ezNbt1Nb3CFeCbgtPPr69Lxb5FW1RydrLQ1Ua18P6LpPvO1oCDHfGw==
   dependencies:
     array-changes "3.0.1"
     array-changes-async "3.0.1"
     babel-runtime "6.26.0"
     detect-indent "3.0.1"
-    diff "1.1.0"
+    diff "4.0.1"
     greedy-interval-packer "1.2.0"
     leven "2.1.0"
     magicpen "5.12.0"
