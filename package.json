@@ -65,7 +65,7 @@
     "lodash.foreach": "^4.5.0",
     "lodash.map": "^4.6.0",
     "lodash.range": "^3.2.0",
-    "mocha": "~5.2.0",
+    "mocha": "~6.0.0",
     "prettier": "^1.13.7",
     "prettier-eslint": "^8.8.2",
     "rimraf": "^2.6.2",
