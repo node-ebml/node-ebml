@@ -79,7 +79,7 @@
     "rollup-plugin-replace": "2.1.0",
     "rollup-plugin-terser": "2.0.2",
     "sinon": "^6.3.5",
-    "stream-mock": "^1.2.0",
+    "stream-mock": "^2.0.0",
     "unexpected": "^11.0.1",
     "unexpected-date": "^1.2.1",
     "unexpected-eventemitter": "^1.0.1",
