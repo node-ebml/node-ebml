@@ -48,7 +48,7 @@
     "@babel/preset-flow": "~7.0.0",
     "@babel/register": "~7.0.0",
     "babel-core": "7.0.0-bridge.0",
-    "babel-eslint": "^10.0.1",
+    "babel-eslint": "^10.0.2",
     "babel-jest": "^24.5.0",
     "check-node-version": "^3.2.0",
     "eslint": "^5.2.0",
