@@ -39,7 +39,7 @@
   },
   "devDependencies": {
     "@babel/core": "~7.5.4",
-    "@babel/plugin-proposal-class-properties": "~7.2.1",
+    "@babel/plugin-proposal-class-properties": "~7.5.0",
     "@babel/plugin-proposal-export-default-from": "~7.2.0",
     "@babel/plugin-proposal-export-namespace-from": "~7.2.0",
     "@babel/plugin-proposal-logical-assignment-operators": "~7.2.0",
