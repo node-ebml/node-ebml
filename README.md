@@ -134,6 +134,7 @@ Thanks to @chrisprice we got an encoder!
 * [Mark Schmale](https://github.com/themasch)
 * [Mathias Buus](https://github.com/mafintosh)
 * [Max Ogden](https://github.com/maxogden)
+* [Morgas](https://github.com/Morgas01)
 * [Oliver Jones](https://github.com/OllieJones)
 * [Oliver Walzer](https://github.com/owcd)
 
