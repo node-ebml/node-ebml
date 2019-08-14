@@ -68,7 +68,7 @@
     "mocha": "~5.2.0",
     "prettier": "^1.13.7",
     "prettier-eslint": "^8.8.2",
-    "rimraf": "^2.6.2",
+    "rimraf": "^3.0.0",
     "rollup": "^0.68.0",
     "rollup-plugin-babel": "^4.0.0-beta.8",
     "rollup-plugin-commonjs": "^9.1.5",
