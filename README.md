@@ -1,10 +1,13 @@
-# EBML [![Build Status](https://travis-ci.org/node-ebml/node-ebml.png?branch=master)](https://travis-ci.org/node-ebml/node-ebml) [![NPM](https://nodei.co/npm/ebml.png?compact=true)](https://www.npmjs.com/package/ebml) [![Coverage Status](https://codecov.io/gh/node-ebml/node-ebml/branch/master/graph/badge.svg)](https://codecov.io/gh/node-ebml/node-ebml) [![Greenkeeper badge](https://badges.greenkeeper.io/node-ebml/node-ebml.svg)](https://greenkeeper.io/)
+# EBML (encoder fix) [![Build Status](https://travis-ci.org/node-ebml/node-ebml.png?branch=master)](https://travis-ci.org/node-ebml/node-ebml) [![NPM](https://nodei.co/npm/ebml.png?compact=true)](https://www.npmjs.com/package/ebml) [![Coverage Status](https://codecov.io/gh/node-ebml/node-ebml/branch/master/graph/badge.svg)](https://codecov.io/gh/node-ebml/node-ebml) [![Greenkeeper badge](https://badges.greenkeeper.io/node-ebml/node-ebml.svg)](https://greenkeeper.io/)
 
 [EBML][EBML] stands for Extensible Binary Meta-Language and is somewhat of a
 binary version of XML. It's used for container formats like [WebM][webm] or
 [MKV][mkv].
 
 ## Note
+this version fixes just the encoder
+
+------------------------------------
 
 This is for version `3.0.0` and up, which has undergone a *massive* rewrite and
 now builds with [RollupJS][rollup].
