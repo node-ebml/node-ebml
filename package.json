@@ -43,7 +43,7 @@
     "@babel/plugin-proposal-export-default-from": "~7.8.0",
     "@babel/plugin-proposal-export-namespace-from": "~7.8.0",
     "@babel/plugin-proposal-logical-assignment-operators": "~7.8.0",
-    "@babel/plugin-proposal-optional-chaining": "~7.2.0",
+    "@babel/plugin-proposal-optional-chaining": "~7.8.0",
     "@babel/preset-env": "~7.2.0",
     "@babel/preset-flow": "~7.0.0",
     "@babel/register": "~7.0.0",
