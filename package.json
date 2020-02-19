@@ -59,7 +59,7 @@
     "eslint-plugin-node": "^8.0.0",
     "eslint-plugin-prettier": "^3.0.0",
     "flow-bin": "0.92.1",
-    "flow-typed": "^2.5.1",
+    "flow-typed": "^3.0.0",
     "jest": "^24.5.0",
     "jest-html-reporter": "^2.4.2",
     "lodash.foreach": "^4.5.0",
