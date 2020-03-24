@@ -82,7 +82,7 @@
     "stream-mock": "^1.2.0",
     "unexpected": "^11.0.1",
     "unexpected-date": "^1.2.1",
-    "unexpected-eventemitter": "^1.0.1",
+    "unexpected-eventemitter": "^2.0.0",
     "unexpected-jest-snapshot": "^0.1.0",
     "unexpected-sinon": "^10.10.1"
   },
