@@ -1,7 +1,7 @@
 {
-  "name": "@morgas/ebml",
+  "name": "node-ebml",
   "version": "3.0.1",
-  "description": "ebml parser (encoder fix)",
+  "description": "ebml parser",
   "main": "lib/ebml.js",
   "module": "lib/ebml.esm.js",
   "browser": "lib/ebml.iife.js",

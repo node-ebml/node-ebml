@@ -51,6 +51,9 @@ describe('EBML', () => {
       // encoder.end();
     });
     describe('#cork and #uncork', () => {
+      /**
+       * @type Encoder
+       */
       let encoder;
       beforeEach(() => {
         encoder = new Encoder();
@@ -100,7 +103,7 @@ describe('EBML', () => {
         );
         encoder.uncork();
         encoder.flush();
-        assert.notStrictEqual(encoder.buffer instanceof Buffer);
+        expect(encoder.buffer, 'not to be a', Buffer);
       });
     });
     describe('::getSchemaInfo', () => {

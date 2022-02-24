@@ -5,16 +5,16 @@ import tools from './tools';
 const debug = require('debug')('ebml:encoder');
 
 function encodeTag(tagId, tagData, end) {
-  let data = [ Buffer.from(tagId.toString(16), 'hex') ];
+  const data = [Buffer.from(tagId.toString(16), 'hex')];
   if (end === -1) {
-    data.push( Buffer.from('01ffffffffffffff', 'hex') );
+    data.push(Buffer.from('01ffffffffffffff', 'hex'));
   } else {
-    data.push( tools.writeVint(tagData.length) );
+    data.push(tools.writeVint(tagData.length));
   }
 
   // cast ArrayBuffer to Buffer
   if (!(tagData instanceof Buffer)) {
-    tagData=Buffer.from(tagData);
+    tagData = Buffer.from(tagData); // eslint-disable-line no-param-reassign
   }
   data.push(tagData);
   return Buffer.concat(data);
