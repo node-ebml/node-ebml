@@ -83,7 +83,7 @@ export default class Tools {
       return a1;
     }
 
-    return Buffer.from([...a1, ...a2]);
+    return Buffer.concat([a1, a2]);
   }
 
   /**
