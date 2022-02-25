@@ -1,15 +1,16 @@
-# EBML (encoder fix) [![Build Status](https://travis-ci.org/node-ebml/node-ebml.png?branch=master)](https://travis-ci.org/node-ebml/node-ebml) [![NPM](https://nodei.co/npm/ebml.png?compact=true)](https://www.npmjs.com/package/ebml) [![Coverage Status](https://codecov.io/gh/node-ebml/node-ebml/branch/master/graph/badge.svg)](https://codecov.io/gh/node-ebml/node-ebml) [![Greenkeeper badge](https://badges.greenkeeper.io/node-ebml/node-ebml.svg)](https://greenkeeper.io/)
+# EBML [![NPM](https://nodei.co/npm/ebml.png?compact=true)](https://www.npmjs.com/package/ebml) [![Coverage Status](https://codecov.io/gh/node-ebml/node-ebml/branch/master/graph/badge.svg)](https://codecov.io/gh/node-ebml/node-ebml) [![Greenkeeper badge](https://badges.greenkeeper.io/node-ebml/node-ebml.svg)](https://greenkeeper.io/)
 
-[EBML][EBML] stands for Extensible Binary Meta-Language and is somewhat of a
+[EBML][ebml] stands for Extensible Binary Meta-Language and is somewhat of a
 binary version of XML. It's used for container formats like [WebM][webm] or
 [MKV][mkv].
 
 ## Note
+
 this version fixes just the encoder
 
-------------------------------------
+---
 
-This is for version `3.0.0` and up, which has undergone a *massive* rewrite and
+This is for version `3.0.0` and up, which has undergone a _massive_ rewrite and
 now builds with [RollupJS][rollup].
 
 Version `2.2.4` is the last version to have guaranteed legacy semantics.
@@ -31,13 +32,14 @@ As input it takes EBML. As output it emits a sequence of chunks: two-element
 arrays looking like this example.
 
 ```js
-[ "tag",
+[
+  'tag',
   {
-    name: "TimecodeScale",
-    type: "u",
-    value: 1000000
-   }
- ]
+    name: 'TimecodeScale',
+    type: 'u',
+    value: 1000000,
+  },
+];
 ```
 
 The first element of the array is a short text string. For tags containing
@@ -48,25 +50,25 @@ and longer integers are represented as hexadecimal text strings.
 
 The second element of the array is an object with these members, among others:
 
-* `name` is the [Matroska][mkv] Element Name.
-* `type` is the data type.
-  * `u`: unsigned integer. Some of these are UIDs, coded as 128-bit numbers.
-  * `i`: signed integer.
-  * `f`: IEEE-754 floating point number.
-  * `s`: printable ASCII text string.
-  * `8`: printable utf-8 Unicode text string.
-  * `d`: a 64-bit signed timestamp, in nanoseconds after (or before) `2001-01-01T00:00UTC`.
-  * `b` binary data, otherwise uninterpreted.
-* `value` is the value of the data in the element, represented as a number or a string.
-* `data` is the binary data of the entire element stored in a [`Uint8Array`][MDN-Uint8Array].
+- `name` is the [Matroska][mkv] Element Name.
+- `type` is the data type.
+  - `u`: unsigned integer. Some of these are UIDs, coded as 128-bit numbers.
+  - `i`: signed integer.
+  - `f`: IEEE-754 floating point number.
+  - `s`: printable ASCII text string.
+  - `8`: printable utf-8 Unicode text string.
+  - `d`: a 64-bit signed timestamp, in nanoseconds after (or before) `2001-01-01T00:00UTC`.
+  - `b` binary data, otherwise uninterpreted.
+- `value` is the value of the data in the element, represented as a number or a string.
+- `data` is the binary data of the entire element stored in a [`Uint8Array`][mdn-uint8array].
 
-Elements with the [`Block`][mkv-block] and  [`SimpleBlock`][mkv-sblock] types
+Elements with the [`Block`][mkv-block] and [`SimpleBlock`][mkv-sblock] types
 get special treatment. They have these additional members:
 
-* `payload` is the coded information in the element, stored in a  [`Uint8Array`][MDN-Uint8Array].
-* `track` is an unsigned integer indicating the payload's track.
-* `keyframe` is a Boolean value set to true if the payload starts an I frame (`SimpleBlocks` only).
-* `discardable` is a Boolean value showing the value of the element's Discardable flag. (`SimpleBlocks` only).
+- `payload` is the coded information in the element, stored in a [`Uint8Array`][mdn-uint8array].
+- `track` is an unsigned integer indicating the payload's track.
+- `keyframe` is a Boolean value set to true if the payload starts an I frame (`SimpleBlocks` only).
+- `discardable` is a Boolean value showing the value of the element's Discardable flag. (`SimpleBlocks` only).
 
 And the `value` member shows the block's Timecode value.
 
@@ -81,13 +83,13 @@ const { Decoder } = require('./lib/ebml.js');
 
 const decoder = new Decoder();
 
-decoder.on('data', chunk => console.log(chunk));
+decoder.on('data', (chunk) => console.log(chunk));
 
 fs.readFile('media/test.webm', (err, data) => {
-    if (err) {
-        throw err;
-    }
-    decoder.write(data);
+  if (err) {
+    throw err;
+  }
+  decoder.write(data);
 });
 ```
 
@@ -100,16 +102,16 @@ const ebmlDecoder = new Decoder();
 const counts = {};
 
 require('fs')
-    .createReadStream('media/test.webm')
-    .pipe(ebmlDecoder)
-    .on('data', chunk => {
-        const { name } = chunk[1];
-        if (!counts[name]) {
-            counts[name] = 0;
-        }
-        counts[name] += 1;
-    })
-    .on('finish', () => console.log(counts));
+  .createReadStream('media/test.webm')
+  .pipe(ebmlDecoder)
+  .on('data', (chunk) => {
+    const { name } = chunk[1];
+    if (!counts[name]) {
+      counts[name] = 0;
+    }
+    counts[name] += 1;
+  })
+  .on('finish', () => console.log(counts));
 ```
 
 # State of this project
@@ -129,21 +131,21 @@ Thanks to @chrisprice we got an encoder!
 
 (in alphabetical order)
 
-* [Chris Price](https://github.com/chrisprice)
-* [Davy Van Deursen](https://github.com/dvdeurse)
-* [Ed Markowski](https://github.com/siphontv)
-* [Jonathan Sifuentes](https://github.com/jayands)
-* [Manuel Wiedenmann](https://github.com/fsmanuel)
-* [Mark Schmale](https://github.com/themasch)
-* [Mathias Buus](https://github.com/mafintosh)
-* [Max Ogden](https://github.com/maxogden)
-* [Morgas](https://github.com/Morgas01)
-* [Oliver Jones](https://github.com/OllieJones)
-* [Oliver Walzer](https://github.com/owcd)
+- [Chris Price](https://github.com/chrisprice)
+- [Davy Van Deursen](https://github.com/dvdeurse)
+- [Ed Markowski](https://github.com/siphontv)
+- [Jonathan Sifuentes](https://github.com/jayands)
+- [Manuel Wiedenmann](https://github.com/fsmanuel)
+- [Mark Schmale](https://github.com/themasch)
+- [Mathias Buus](https://github.com/mafintosh)
+- [Max Ogden](https://github.com/maxogden)
+- [Morgas](https://github.com/Morgas01)
+- [Oliver Jones](https://github.com/OllieJones)
+- [Oliver Walzer](https://github.com/owcd)
 
-[EBML]: http://ebml.sourceforge.net/
+[ebml]: http://ebml.sourceforge.net/
 [new-issue]: https://github.com/node-ebml/node-ebml/issues/new
-[MDN-Uint8Array]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Uint8Array
+[mdn-uint8array]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Uint8Array
 [node-stream-transform]: https://nodejs.org/api/stream.html#stream_class_stream_transform
 [mkv]: http://www.matroska.org/technical/specs/index.html
 [rollup]: https://rollupjs.org/
