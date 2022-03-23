@@ -4,7 +4,6 @@
   "description": "ebml parser",
   "main": "lib/ebml.js",
   "module": "lib/ebml.esm.js",
-  "browser": "lib/ebml.iife.js",
   "maintainers": [
     "Jonathan Sifuentes <jayands.dev@gmail.com>",
     "Mark Schmale <masch@masch.it>"
