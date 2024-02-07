@@ -21,7 +21,7 @@ export default class Tools {
     let value = buffer[start] & ((1 << (8 - length)) - 1);
     for (let i = 1; i < length; i += 1) {
       if (i === 7) {
-        if (value >= 2 ** 8 && buffer[start + 7] > 0) {
+        if (value >= 2 ** 45 && buffer[start + 7] > 0) {
           return { length, value: -1 };
         }
       }
